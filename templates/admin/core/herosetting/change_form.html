@@ -1,0 +1,142 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+    
+    <script>
+    if (typeof window.jQuery === 'undefined' && typeof django !== 'undefined' && django.jQuery) {
+        window.jQuery = django.jQuery;
+        window.$ = django.jQuery;
+    }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/2.0.4/css/Jcrop.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/2.0.4/js/Jcrop.min.js"></script>
+    
+    <script>
+    django.jQuery(document).ready(function($) {
+        console.log('🎯 Image cropping ready');
+        
+        function createImagePreview(file) {
+            $('#image-preview').remove();
+            
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var $preview = $('<div id="image-preview" style="margin: 15px 0; padding: 15px; background: #f9f9f9; border: 1px solid #ddd;">' +
+                    '<h4 style="margin: 0 0 10px 0; color: #333;">📐 Crop Your Image</h4>' +
+                    '<p style="margin: 0 0 10px 0; color: #666;">Drag to select the area for your hero banner (ratio: 1534×512)</p>' +
+                    '<img id="crop-target" src="' + e.target.result + '" style="max-width: 100%; height: auto; border: 1px solid #ccc;">' +
+                    '<div id="crop-coords" style="margin-top: 10px; padding: 5px; background: #e8f4f8; font-family: monospace; font-size: 12px;"></div>' +
+                    '</div>');
+                
+                $('#id_background').closest('.field-background').after($preview);
+                
+                setTimeout(function() {
+                    initJcrop($('#crop-target'));
+                }, 300);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function initJcrop($img) {
+            var $croppingInput = $('#id_cropping');
+            
+            if ($img.data('Jcrop')) {
+                $img.data('Jcrop').destroy();
+            }
+            
+            function startJcrop() {
+                $img.Jcrop({
+                    aspectRatio: 1534/512,
+                    setSelect: [0, 0, 400, 130],
+                    minSize: [150, 48],
+                    boxWidth: 800,
+                    boxHeight: 400,
+                    bgColor: 'black',
+                    bgOpacity: 0.4,
+                    onSelect: function(coords) {
+                        // FIX: Round coordinates to integers
+                        var x = Math.round(coords.x);
+                        var y = Math.round(coords.y);
+                        var w = Math.round(coords.w);
+                        var h = Math.round(coords.h);
+                        
+                        var cropValue = x + ',' + y + ',' + w + ',' + h;
+                        $croppingInput.val(cropValue);
+                        
+                        $('#crop-coords').html(
+                            '<strong>Crop Coordinates:</strong> ' + cropValue + 
+                            '<br><strong>Size:</strong> ' + w + '×' + h + ' px'
+                        );
+                        
+                        console.log('✅ Crop set (rounded):', cropValue);
+                    }
+                }, function() {
+                    console.log('✅ Jcrop initialized');
+                    
+                    // Load existing crop if available
+                    var existingCrop = $croppingInput.val();
+                    if (existingCrop) {
+                        var coords = existingCrop.split(',');
+                        if (coords.length === 4) {
+                            // Parse potentially float values
+                            var x = Math.round(parseFloat(coords[0]));
+                            var y = Math.round(parseFloat(coords[1]));
+                            var w = Math.round(parseFloat(coords[2]));
+                            var h = Math.round(parseFloat(coords[3]));
+                            
+                            this.setSelect([x, y, x + w, y + h]);
+                            console.log('Loaded existing crop:', x, y, w, h);
+                        }
+                    }
+                });
+            }
+            
+            if ($img[0].complete) {
+                startJcrop();
+            } else {
+                $img.on('load', startJcrop);
+            }
+        }
+        
+        // Handle new file uploads
+        $('#id_background').change(function(e) {
+            var file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                createImagePreview(file);
+            }
+        });
+        
+        // Handle existing images
+        function checkExistingImage() {
+            var $existingLink = $('.file-upload a[href*="hero_backgrounds"], .file-upload a[href*="media"]');
+            if ($existingLink.length) {
+                var imageUrl = $existingLink.attr('href');
+                var $preview = $('<div id="image-preview" style="margin: 15px 0; padding: 15px; background: #f0f8ff; border: 1px solid #4CAF50;">' +
+                    '<h4 style="margin: 0 0 10px 0; color: #333;">📐 Current Image - Adjust Crop</h4>' +
+                    '<img id="crop-target" src="' + imageUrl + '" style="max-width: 100%; height: auto; border: 1px solid #ccc;">' +
+                    '<div id="crop-coords" style="margin-top: 10px; padding: 5px; background: #e8f4f8; font-family: monospace; font-size: 12px;"></div>' +
+                    '</div>');
+                
+                $('#id_background').closest('.field-background').after($preview);
+                setTimeout(function() { initJcrop($('#crop-target')); }, 500);
+            }
+        }
+        
+        setTimeout(checkExistingImage, 1000);
+    });
+    </script>
+    
+    <style>
+    .jcrop-handle {
+        background-color: #4CAF50 !important;
+        border: 2px solid #fff !important;
+        width: 8px !important;
+        height: 8px !important;
+    }
+    
+    .jcrop-tracker {
+        background-color: rgba(76, 175, 80, 0.2) !important;
+    }
+    </style>
+{% endblock %}

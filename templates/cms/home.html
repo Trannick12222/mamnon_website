@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunny Kids - Mầm Non Song Ngữ Quốc Tế</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header với logo động */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #FF6B9D;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: linear-gradient(135deg, #FFE066, #FF6B9D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: #FF6B9D;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Slider với nhiều ảnh */
+        .hero-slider {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .slide-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            animation: slideInUp 1s ease-out;
+        }
+
+        .slide-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-buttons {
+            animation: slideInUp 1s ease-out 0.6s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            color: white;
+            padding: 15px 30px;
+            margin: 0 10px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        .cta-button.secondary {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid white;
+        }
+
+        /* Slider Controls */
+        .slider-nav {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider-dot.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        /* Quick Stats với icons động */
+        .quick-stats {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        /* About Section với ảnh và video */
+        .about-section {
+            padding: 100px 0;
+            background: #f8f9ff;
+        }
+
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            border-radius: 2px;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        .about-text {
+            padding: 2rem;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            color: #FF6B9D;
+            margin-bottom: 1rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .about-features {
+            list-style: none;
+        }
+
+        .about-features li {
+            padding: 0.8rem 0;
+            position: relative;
+            padding-left: 40px;
+            color: #333;
+        }
+
+        .about-features li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+        }
+
+        .about-media {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .about-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: white;
+        }
+
+        .video-placeholder {
+            background: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Programs Grid với ảnh cho mỗi chương trình */
+        .programs-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .program-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .program-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .program-image {
+            height: 200px;
+            background: linear-gradient(135deg, #FFE066, #FF6B9D);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .program-image::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .program-card:hover .program-image::before {
+            opacity: 1;
+        }
+
+        .program-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: white;
+            z-index: 2;
+        }
+
+        .program-content {
+            padding: 2rem;
+        }
+
+        .program-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .program-content p {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .program-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        .program-age {
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Gallery Showcase */
+        .gallery-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8f9ff, #e8f4fd);
+        }
+
+        .gallery-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .gallery-tab {
+            padding: 1rem 2rem;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .gallery-tab.active {
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            color: white;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .gallery-item {
+            aspect-ratio: 1;
+            background: linear-gradient(45deg, #FFE066, #FF6B9D, #4ECDC4);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item::before {
+            content: "📷";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            opacity: 0.7;
+        }
+
+        /* Staff Section với ảnh giáo viên */
+        .staff-section {
+            padding: 100px 0;
+            background: white;
+        }
+
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .staff-card {
+            text-align: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .staff-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .staff-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .staff-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .staff-role {
+            color: #FF6B9D;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .staff-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Testimonials với ảnh phụ huynh */
+        .testimonials-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            color: white;
+        }
+
+        .testimonials-slider {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .testimonial-item {
+            padding: 0 2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .testimonial-item.active {
+            opacity: 1;
+        }
+
+        .testimonial-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .author-info h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        /* News & Events với thumbnail */
+        .news-section {
+            padding: 100px 0;
+            background: #f8f9ff;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-image {
+            height: 200px;
+            background: linear-gradient(45deg, #FFE066, #FF6B9D);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .news-content {
+            padding: 1.5rem;
+        }
+
+        .news-date {
+            color: #FF6B9D;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .news-excerpt {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .read-more {
+            color: #4ECDC4;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 100px 0;
+            background: #333;
+            color: white;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: #4ECDC4;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            color: #FF6B9D;
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4ECDC4;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background: #222;
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #4ECDC4;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #FF6B9D;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: scale(1.1);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #444;
+            margin-top: 2rem;
+            color: #888;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .slide-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-content,
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .programs-grid,
+            .gallery-grid,
+            .staff-grid,
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="/" class="logo">
+                <div class="logo-img">🌟</div>
+                <div class="logo-text">Sunny Kids</div>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#home">Trang chủ</a></li>
+                <li><a href="#about">Giới thiệu</a></li>
+                <li><a href="#programs">Chương trình</a></li>
+                <li><a href="#gallery">Thư viện</a></li>
+                <li><a href="#staff">Giáo viên</a></li>
+                <li><a href="#contact">Liên hệ</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Slider -->
+    <section class="hero-slider" id="home">
+        <!-- Slide 1: Ảnh hero chính từ CMS -->
+        <div class="slide active" style="background: {% if hero_bg %}url('{{ hero_bg }}'){% else %}linear-gradient(135deg, #FFE066, #FF6B9D, #4ECDC4){% endif %} no-repeat center center / cover;">
+            <div class="slide-content">
+                <h1>Chào mừng đến với Sunny Kids</h1>
+                <p>Nơi ươm mầm những ước mơ, phát triển tài năng và xây dựng tương lai tươi sáng cho các bé</p>
+                <div class="cta-buttons">
+                    <a href="#contact" class="cta-button">Đăng ký tham quan</a>
+                    <a href="#about" class="cta-button secondary">Tìm hiểu thêm</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Ảnh hoạt động học tập -->
+        <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect width="1200" height="600" fill="%234ECDC4"/><circle cx="300" cy="150" r="50" fill="white" opacity="0.1"/><circle cx="900" cy="400" r="30" fill="white" opacity="0.1"/></svg>') no-repeat center center / cover;">
+            <div class="slide-content">
+                <h1>Học Tập Vui Chơi</h1>
+                <p>Phương pháp giáo dục STEAM và Montessori giúp trẻ phát triển toàn diện</p>
+                <div class="cta-buttons">
+                    <a href="#programs" class="cta-button">Xem chương trình</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Ảnh cơ sở vật chất -->
+        <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect width="1200" height="600" fill="%23FF6B9D"/><rect x="200" y="200" width="800" height="200" fill="white" opacity="0.1" rx="20"/></svg>') no-repeat center center / cover;">
+            <div class="slide-content">
+                <h1>Cơ Sở Hiện Đại</h1>
+                <p>Không gian học tập an toàn, hiện đại theo tiêu chuẩn quốc tế</p>
+                <div class="cta-buttons">
+                    <a href="#gallery" class="cta-button">Xem hình ảnh</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slider Navigation -->
+        <div class="slider-nav">
+            <span class="slider-dot active" data-slide="0"></span>
+            <span class="slider-dot" data-slide="1"></span>
+            <span class="slider-dot" data-slide="2"></span>
+        </div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="quick-stats">
+        <div class="stats-container">
+            <div class="stat-item fade-in">
+                <div class="stat-icon">👨‍🏫</div>
+                <div class="stat-number">15+</div>
+                <div>Giáo viên kinh nghiệm</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-icon">👶</div>
+                <div class="stat-number">200+</div>
+                <div>Học sinh</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-number">5</div>
+                <div>Năm kinh nghiệm</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-icon">📚</div>
+                <div class="stat-number">10+</div>
+                <div>Chương trình học</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <div class="about-header fade-in">
+                <h2 class="section-title">Về Sunny Kids</h2>
+                <p>Ngôi trường mầm non song ngữ quốc tế hàng đầu tại TP.HCM</p>
+            </div>
+
+            <div class="about-content fade-in">
+                <div class="about-text">
+                    <h3>Sứ mệnh của chúng tôi</h3>
+                    <p>Sunny Kids được thành lập với tâm huyết mang đến cho trẻ em Việt Nam những chương trình giáo dục tiên tiến nhất thế giới.</p>
+                    <p>Chúng tôi tạo ra môi trường giáo dục đầy yêu thương và chuyên nghiệp, nơi mỗi đứa trẻ được tôn trọng và phát triển theo cách riêng.</p>
+                    <ul class="about-features">
+                        <li>Cơ sở vật chất hiện đại, an toàn theo tiêu chuẩn quốc tế</li>
+                        <li>Đội ngũ giáo viên được đào tạo bài bản và có tâm huyết</li>
+                        <li>Chương trình giáo dục được thiết kế khoa học và sáng tạo</li>
+                        <li>Môi trường đa văn hóa, khuyến khích sự khác biệt</li>
+                    </ul>
+                </div>
+                <div class="about-media">
+                    <!-- Chỗ này có thể thêm ảnh từ CMS -->
+                    <div class="about-image">🏫</div>
+                </div>
+            </div>
+
+            <div class="about-content fade-in">
+                <div class="about-media">
+                    <!-- Video giới thiệu trường -->
+                    <div class="about-image video-placeholder">
+                        <div class="play-button">▶️</div>
+                        <p>Video giới thiệu trường</p>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <h3>Tại sao chọn Sunny Kids?</h3>
+                    <p>Với hơn 5 năm kinh nghiệm trong lĩnh vực giáo dục mầm non, chúng tôi tự hào là một trong những trường mầm non song ngữ uy tín nhất tại TP.HCM.</p>
+                    <ul class="about-features">
+                        <li>Chương trình song ngữ Anh - Việt chuẩn quốc tế</li>
+                        <li>Giáo viên bản ngữ từ các nước phát triển</li>
+                        <li>Thực đơn dinh dưỡng được thiết kế bởi chuyên gia</li>
+                        <li>Hoạt động ngoại khóa phong phú và đa dạng</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section class="programs-section" id="programs">
+        <div class="about-container">
+            <div class="about-header fade-in">
+                <h2 class="section-title">Chương trình học</h2>
+                <p>Các chương trình giáo dục đa dạng phù hợp với từng độ tuổi</p>
+            </div>
+
+            <div class="programs-grid">
+                <div class="program-card fade-in">
+                    <div class="program-image">
+                        <!-- Ảnh chương trình Nursery -->
+                        <div class="program-icon">🍼</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Lớp Nhà trẻ (6-18 tháng)</h3>
+                        <p>Chăm sóc và phát triển các kỹ năng cơ bản đầu đời cho bé thông qua các hoạt động vui chơi phù hợp.</p>
+                        <div class="program-meta">
+                            <span class="program-age">6-18 tháng</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="program-card fade-in">
+                    <div class="program-image">
+                        <!-- Ảnh chương trình Toddler -->
+                        <div class="program-icon">🧸</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Lớp Mầm (18-36 tháng)</h3>
+                        <p>Phát triển khả năng vận động, ngôn ngữ và giao tiếp xã hội cơ bản qua các hoạt động khám phá.</p>
+                        <div class="program-meta">
+                            <span class="program-age">18-36 tháng</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="program-card fade-in">
+                    <div class="program-image">
+                        <!-- Ảnh chương trình Preschool -->
+                        <div class="program-icon">🎨</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Lớp Chồi (3-4 tuổi)</h3>
+                        <p>Chuẩn bị kỹ năng học tập cơ bản, phát triển sự sáng tạo và tư duy logic thông qua STEAM.</p>
+                        <div class="program-meta">
+                            <span class="program-age">3-4 tuổi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="program-card fade-in">
+                    <div class="program-image">
+                        <!-- Ảnh chương trình Kindergarten -->
+                        <div class="program-icon">📚</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Lớp Lá (4-5 tuổi)</h3>
+                        <p>Chương trình tiền tiểu học với học thuật cân bằng, phát triển kỹ năng xã hội và chuẩn bị vào lớp 1.</p>
+                        <div class="program-meta">
+                            <span class="program-age">4-5 tuổi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="program-card fade-in">
+                    <div class="program-image">
+                        <!-- Ảnh chương trình Summer -->
+                        <div class="program-icon">☀️</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Chương trình Hè</h3>
+                        <p>Các hoạt động vui chơi, học tập bổ ích trong kỳ nghỉ hè với nhiều trải nghiệm thú vị.</p>
+                        <div class="program-meta">
+                            <span class="program-age">2-6 tuổi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="program-card fade-in">
+                    <div class="program-image">
+                        <!-- Ảnh chương trình After School -->
+                        <div class="program-icon">🎭</div>
+                    </div>
+                    <div class="program-content">
+                        <h3>Hoạt động ngoại khóa</h3>
+                        <p>Yoga, múa, thể thao, âm nhạc và nhiều hoạt động phong phú phát triển tài năng của bé.</p>
+                        <div class="program-meta">
+                            <span class="program-age">3-6 tuổi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section" id="gallery">
+        <div class="about-container">
+            <div class="about-header fade-in">
+                <h2 class="section-title">Thư viện hình ảnh</h2>
+                <p>Khám phá cuộc sống học tập vui vẻ tại Sunny Kids</p>
+            </div>
+
+            <div class="gallery-tabs fade-in">
+                <button class="gallery-tab active" data-category="all">Tất cả</button>
+                <button class="gallery-tab" data-category="classroom">Lớp học</button>
+                <button class="gallery-tab" data-category="playground">Sân chơi</button>
+                <button class="gallery-tab" data-category="activities">Hoạt động</button>
+                <button class="gallery-tab" data-category="events">Sự kiện</button>
+            </div>
+
+            <div class="gallery-grid fade-in">
+                <!-- Các ảnh từ CMS sẽ được load ở đây -->
+                <div class="gallery-item" data-category="classroom"></div>
+                <div class="gallery-item" data-category="playground"></div>
+                <div class="gallery-item" data-category="activities"></div>
+                <div class="gallery-item" data-category="events"></div>
+                <div class="gallery-item" data-category="classroom"></div>
+                <div class="gallery-item" data-category="activities"></div>
+                <div class="gallery-item" data-category="playground"></div>
+                <div class="gallery-item" data-category="events"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Staff Section -->
+    <section class="staff-section" id="staff">
+        <div class="about-container">
+            <div class="about-header fade-in">
+                <h2 class="section-title">Đội ngũ giáo viên</h2>
+                <p>Những người thầy, cô tận tâm và giàu kinh nghiệm</p>
+            </div>
+
+            <div class="staff-grid">
+                <div class="staff-card fade-in">
+                    <div class="staff-avatar">👩‍🏫</div>
+                    <div class="staff-name">Ms. Sarah Johnson</div>
+                    <div class="staff-role">Hiệu trưởng / Giáo viên bản ngữ</div>
+                    <div class="staff-description">Với hơn 10 năm kinh nghiệm giảng dạy tại các trường quốc tế, Ms. Sarah mang đến phương pháp giáo dục hiện đại và hiệu quả.</div>
+                </div>
+
+                <div class="staff-card fade-in">
+                    <div class="staff-avatar">👨‍🏫</div>
+                    <div class="staff-name">Cô Nguyễn Thị Lan</div>
+                    <div class="staff-role">Phó Hiệu trưởng</div>
+                    <div class="staff-description">Cô Lan là giáo viên giàu kinh nghiệm với chuyên môn về giáo dục mầm non và phát triển kỹ năng xã hội cho trẻ.</div>
+                </div>
+
+                <div class="staff-card fade-in">
+                    <div class="staff-avatar">👩‍🏫</div>
+                    <div class="staff-name">Ms. Emily Watson</div>
+                    <div class="staff-role">Giáo viên tiếng Anh</div>
+                    <div class="staff-description">Ms. Emily chuyên về phương pháp Montessori và có kinh nghiệm dạy trẻ em từ nhiều quốc gia khác nhau.</div>
+                </div>
+
+                <div class="staff-card fade-in">
+                    <div class="staff-avatar">👨‍🏫</div>
+                    <div class="staff-name">Thầy Trần Văn Nam</div>
+                    <div class="staff-role">Giáo viên thể dục</div>
+                    <div class="staff-description">Thầy Nam chuyên về phát triển vận động cho trẻ em và có nhiều kinh nghiệm trong việc tổ chức các hoạt động thể thao.</div>
+                </div>
+
+                <div class="staff-card fade-in">
+                    <div class="staff-avatar">👩‍🏫</div>
+                    <div class="staff-name">Cô Lê Thị Hương</div>
+                    <div class="staff-role">Giáo viên âm nhạc</div>
+                    <div class="staff-description">Cô Hương tốt nghiệp Học viện Âm nhạc và có tài năng đặc biệt trong việc phát triển năng khiếu âm nhạc cho trẻ em.</div>
+                </div>
+
+                <div class="staff-card fade-in">
+                    <div class="staff-avatar">👩‍🍳</div>
+                    <div class="staff-name">Cô Phạm Thị Mai</div>
+                    <div class="staff-role">Chuyên gia dinh dưỡng</div>
+                    <div class="staff-description">Cô Mai đảm bảo thực đơn dinh dưỡng khoa học và an toàn thực phẩm cho tất cả các bé tại trường.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="about-container">
+            <div class="about-header fade-in">
+                <h2 class="section-title" style="color: white;">Phụ huynh nói gì về chúng tôi</h2>
+            </div>
+
+            <div class="testimonials-slider fade-in">
+                <div class="testimonial-item active">
+                    <div class="testimonial-text">
+                        "Con tôi đã học tại Sunny Kids được 2 năm và có sự tiến bộ vượt bậc. Các cô giáo rất tận tâm và chương trình học rất bổ ích. Con rất thích đến trường!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👩</div>
+                        <div class="author-info">
+                            <h4>Chị Nguyễn Thị Hà</h4>
+                            <p>Phụ huynh bé Minh An - Lớp Lá</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-item">
+                    <div class="testimonial-text">
+                        "Môi trường học tập tại Sunny Kids rất tuyệt vời. Con tôi không chỉ học được kiến thức mà còn phát triển kỹ năng giao tiếp và sự tự tin. Rất hài lòng!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👨</div>
+                        <div class="author-info">
+                            <h4>Anh Trần Văn Đức</h4>
+                            <p>Phụ huynh bé Khánh Linh - Lớp Chồi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-item">
+                    <div class="testimonial-text">
+                        "Chúng tôi rất ấn tượng với cách các cô giáo quan tâm đến từng bé. Thực đơn dinh dưỡng và các hoạt động ngoại khóa đều rất chất lượng."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👩</div>
+                        <div class="author-info">
+                            <h4>Chị Lê Thị Lan</h4>
+                            <p>Phụ huynh bé Phương Anh - Lớp Mầm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News & Events -->
+    <section class="news-section">
+        <div class="about-container">
+            <div class="about-header fade-in">
+                <h2 class="section-title">Tin tức & Sự kiện</h2>
+                <p>Cập nhật những hoạt động mới nhất tại trường</p>
+            </div>
+
+            <div class="news-grid">
+                <div class="news-card fade-in">
+                    <div class="news-image">📰</div>
+                    <div class="news-content">
+                        <div class="news-date">15/07/2025</div>
+                        <h3 class="news-title">Khai giảng năm học mới 2025-2026</h3>
+                        <p class="news-excerpt">Chúng tôi hân hạnh thông báo về lễ khai giảng năm học mới với nhiều chương trình đặc sắc và hấp dẫn...</p>
+                        <a href="#" class="read-more">Đọc thêm →</a>
+                    </div>
+                </div>
+
+                <div class="news-card fade-in">
+                    <div class="news-image">🎭</div>
+                    <div class="news-content">
+                        <div class="news-date">20/06/2025</div>
+                        <h3 class="news-title">Lễ hội Thiếu nhi 1/6 tại Sunny Kids</h3>
+                        <p class="news-excerpt">Các bé đã có một ngày Thiếu nhi thật vui vẻ với nhiều hoạt động thú vị, trò chơi và quà tặng...</p>
+                        <a href="#" class="read-more">Đọc thêm →</a>
+                    </div>
+                </div>
+
+                <div class="news-card fade-in">
+                    <div class="news-image">🏆</div>
+                    <div class="news-content">
+                        <div class="news-date">10/05/2025</div>
+                        <h3 class="news-title">Sunny Kids đạt giải nhất cuộc thi vẽ tranh</h3>
+                        <p class="news-excerpt">Chúng tôi tự hào khi các bé của trường đã đạt được nhiều giải thưởng trong cuộc thi vẽ tranh cấp thành phố...</p>
+                        <a href="#" class="read-more">Đọc thêm →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-container">
+            <div class="contact-info">
+                <h2>Liên hệ với chúng tôi</h2>
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div>
+                        <h4>Địa chỉ</h4>
+                        <p>123 Đường ABC, Quận 1, TP.HCM</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div>
+                        <h4>Hotline</h4>
+                        <p>028 1234 5678</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <div>
+                        <h4>Email</h4>
+                        <p>info@sunnykids.edu.vn</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon">🕒</div>
+                    <div>
+                        <h4>Giờ mở cửa</h4>
+                        <p>Thứ 2 - Thứ 6: 7:00 - 17:30<br>Thứ 7: 8:00 - 11:30</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h3>Đăng ký tham quan</h3>
+                <form method="post" action="/contact-form/">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                    <div class="form-group">
+                        <label for="parent_name">Họ tên phụ huynh *</label>
+                        <input type="text" id="parent_name" name="parent_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Số điện thoại *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="child_age">Tuổi của bé</label>
+                        <select id="child_age" name="child_age">
+                            <option value="">Chọn độ tuổi</option>
+                            <option value="6-18months">6-18 tháng</option>
+                            <option value="18-36months">18-36 tháng</option>
+                            <option value="3-4years">3-4 tuổi</option>
+                            <option value="4-5years">4-5 tuổi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="program">Chương trình quan tâm</label>
+                        <select id="program" name="program">
+                            <option value="">Chọn chương trình</option>
+                            <option value="nursery">Lớp Nhà trẻ</option>
+                            <option value="toddler">Lớp Mầm</option>
+                            <option value="preschool">Lớp Chồi</option>
+                            <option value="kindergarten">Lớp Lá</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Ghi chú</label>
+                        <textarea id="message" name="message" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Gửi đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sunny Kids</h3>
+                <p>Mầm non song ngữ quốc tế hàng đầu tại TP.HCM, nơi ươm mầm những ước mơ và tài năng của các bé.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">📺</a>
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">💼</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Chương trình</h3>
+                <a href="#">Lớp Nhà trẻ (6-18 tháng)</a>
+                <a href="#">Lớp Mầm (18-36 tháng)</a>
+                <a href="#">Lớp Chồi (3-4 tuổi)</a>
+                <a href="#">Lớp Lá (4-5 tuổi)</a>
+                <a href="#">Chương trình Hè</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Liên kết</h3>
+                <a href="#about">Giới thiệu</a>
+                <a href="#programs">Chương trình</a>
+                <a href="#gallery">Thư viện</a>
+                <a href="#staff">Giáo viên</a>
+                <a href="#contact">Liên hệ</a>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Liên hệ</h3>
+                <p>📍 123 Đường ABC, Quận 1, TP.HCM</p>
+                <p>📞 028 1234 5678</p>
+                <p>✉️ info@sunnykids.edu.vn</p>
+                <p>🌐 www.sunnykids.edu.vn</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 Sunny Kids - Mầm Non Song Ngữ Quốc Tế. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Hero Slider
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.slider-dot');
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto slide every 5 seconds
+        setInterval(nextSlide, 5000);
+
+        // Dot navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentSlide = index;
+                showSlide(currentSlide);
+            });
+        });
+
+        // Gallery tabs
+        const galleryTabs = document.querySelectorAll('.gallery-tab');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+
+        galleryTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                galleryTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                const category = tab.dataset.category;
+                galleryItems.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Testimonials rotation
+        let currentTestimonial = 0;
+        const testimonials = document.querySelectorAll('.testimonial-item');
+
+        function showTestimonial(index) {
+            testimonials.forEach(item => item.classList.remove('active'));
+            testimonials[index].classList.add('active');
+        }
+
+        function nextTestimonial() {
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            showTestimonial(currentTestimonial);
+        }
+
+        setInterval(nextTestimonial, 6000);
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 2px 30px rgba(0,0,0,0.15)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // Form submission
+        document.querySelector('.submit-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const name = document.querySelector('#parent_name').value;
+            const phone = document.querySelector('#phone').value;
+            
+            if (!name || !phone) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            
+            alert('Cảm ơn bạn đã đăng ký! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
+            
+            // Reset form
+            document.querySelectorAll('input, textarea, select').forEach(field => {
+                field.value = '';
+            });
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current) + (target > 99 ? '+' : '');
+            }, 40);
+        }
+
+        // Trigger counter animation when stats section is visible
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const numbers = entry.target.querySelectorAll('.stat-number');
+                    numbers.forEach(num => {
+                        const target = parseInt(num.textContent);
+                        animateCounter(num, target);
+                    });
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        const statsSection = document.querySelector('.quick-stats');
+        if (statsSection) {
+            statsObserver.observe(statsSection);
+        }
+    </script>
+</body>
+</html>

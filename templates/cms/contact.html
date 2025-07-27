@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load cms_tags %}
+
+{% block title %}Liên hệ - Mầm non{% endblock %}
+
+{% block content %}
+<h2>Liên hệ với chúng tôi</h2>
+
+{% placeholder "content" %}
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin: 3rem 0;">
+    <div>
+        <h3>Thông tin liên hệ</h3>
+        <p><strong>📍 Địa chỉ:</strong> 123 Đường ABC, Quận XYZ, TP.HCM</p>
+        <p><strong>📞 Điện thoại:</strong> (028) 1234 5678</p>
+        <p><strong>📧 Email:</strong> info@mamnon.com</p>
+        <p><strong>🕒 Giờ hoạt động:</strong> 7:00 - 18:00 (Thứ 2 - Thứ 6)</p>
+    </div>
+    
+    <div>
+        <h3>Gửi tin nhắn</h3>
+        <form method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Họ tên" required style="padding: 0.5rem;">
+            <input type="email" name="email" placeholder="Email" required style="padding: 0.5rem;">
+            <input type="tel" name="phone" placeholder="Số điện thoại" style="padding: 0.5rem;">
+            <textarea name="message" placeholder="Tin nhắn" rows="5" required style="padding: 0.5rem;"></textarea>
+            <button type="submit" style="padding: 0.75rem; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Gửi tin nhắn</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
