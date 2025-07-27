@@ -19,7 +19,7 @@ urlpatterns = [
     path('programs/', include('apps.programs.urls')),
     
     # Django CMS URLs (phải để cuối cùng)
-    path('', include('cms.urls')),
+    path('', kindergarten_home, name='home'),
 ]
 
 # Serve static files trong development
