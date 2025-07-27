@@ -917,7 +917,23 @@
 
     <!-- Hero Slider -->
     <section class="hero-slider" id="home">
-        <!-- Slide 1: Ảnh hero chính từ CMS -->
+        {% for slide in hero_slides %}
+        <div class="slide {% if forloop.first %}active{% endif %}" 
+            style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                    url('{% if slide.background %}{{ slide.background.url }}{% else %}data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect width="1200" height="600" fill="%23FF6B9D"/></svg>{% endif %}') no-repeat center center / cover;">
+            <div class="slide-content">
+                <h1>{{ slide.title }}</h1>
+                <p>{{ slide.subtitle }}</p>
+                <div class="cta-buttons">
+                    <a href="{{ slide.primary_button_link }}" class="cta-button">{{ slide.primary_button_text }}</a>
+                    {% if slide.secondary_button_text %}
+                    <a href="{{ slide.secondary_button_link }}" class="cta-button secondary">{{ slide.secondary_button_text }}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <!-- Fallback slide nếu không có dữ liệu -->
         <div class="slide active" style="background: {% if hero_bg %}url('{{ hero_bg }}'){% else %}linear-gradient(135deg, #FFE066, #FF6B9D, #4ECDC4){% endif %} no-repeat center center / cover;">
             <div class="slide-content">
                 <h1>Chào mừng đến với Sunny Kids</h1>
@@ -928,34 +944,13 @@
                 </div>
             </div>
         </div>
-
-        <!-- Slide 2: Ảnh hoạt động học tập -->
-        <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect width="1200" height="600" fill="%234ECDC4"/><circle cx="300" cy="150" r="50" fill="white" opacity="0.1"/><circle cx="900" cy="400" r="30" fill="white" opacity="0.1"/></svg>') no-repeat center center / cover;">
-            <div class="slide-content">
-                <h1>Học Tập Vui Chơi</h1>
-                <p>Phương pháp giáo dục STEAM và Montessori giúp trẻ phát triển toàn diện</p>
-                <div class="cta-buttons">
-                    <a href="#programs" class="cta-button">Xem chương trình</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 3: Ảnh cơ sở vật chất -->
-        <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect width="1200" height="600" fill="%23FF6B9D"/><rect x="200" y="200" width="800" height="200" fill="white" opacity="0.1" rx="20"/></svg>') no-repeat center center / cover;">
-            <div class="slide-content">
-                <h1>Cơ Sở Hiện Đại</h1>
-                <p>Không gian học tập an toàn, hiện đại theo tiêu chuẩn quốc tế</p>
-                <div class="cta-buttons">
-                    <a href="#gallery" class="cta-button">Xem hình ảnh</a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
 
         <!-- Slider Navigation -->
         <div class="slider-nav">
-            <span class="slider-dot active" data-slide="0"></span>
-            <span class="slider-dot" data-slide="1"></span>
-            <span class="slider-dot" data-slide="2"></span>
+            {% for slide in hero_slides %}
+            <span class="slider-dot {% if forloop.first %}active{% endif %}" data-slide="{{ forloop.counter0 }}"></span>
+            {% endfor %}
         </div>
     </section>
 

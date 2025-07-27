@@ -82,13 +82,15 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
+                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'sekizai.context_processors.sekizai',
                 'cms.context_processors.cms_settings',
-                'apps.core.context_processors.hero_settings',
+                'apps.core.context_processors.hero_settings',  # Legacy - giữ hero_bg
+                'apps.core.context_processors.site_data',      # Mới - data cho design mới
+                'apps.core.context_processors.school_info',    # Legacy - thông tin trường
             ],
         },
     },
@@ -158,7 +160,26 @@ CMS_TEMPLATES = [
 ]
 
 # CMS Permissions
-CMS_PERMISSION = False
+CMS_PERMISSION = True
+
+# CMS Language settings
+CMS_LANGUAGES = {
+    'default': {
+        'public': True,
+        'hide_untranslated': False,
+        'redirect_on_fallback': True,
+    },
+    1: [
+        {
+            'public': True,
+            'code': 'vi',
+            'hide_untranslated': False,
+            'name': 'Tiếng Việt',
+            'redirect_on_fallback': True,
+        },
+    ],
+}
+
 
 # CMS Toolbar
 CMS_TOOLBAR_ANONYMOUS_ON = False

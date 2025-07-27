@@ -2,25 +2,26 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.conf.urls.i18n import i18n_patterns
 from apps.core.views import contact_form, kindergarten_home
 
+# URLs không cần ngôn ngữ
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
-    # URL cho form liên hệ
     path('contact-form/', contact_form, name='contact_form'),
-    
-    # URL cho trang chủ custom (nếu cần)
+]
+
+# URLs có ngôn ngữ (cho CMS)
+urlpatterns += i18n_patterns(
+    # Custom URLs
     path('kindergarten/', kindergarten_home, name='kindergarten_home'),
-    
-    # URLs cho các apps khác
     path('contacts/', include('apps.contacts.urls')),
     path('news/', include('apps.news.urls')),
     path('programs/', include('apps.programs.urls')),
     
-    # Django CMS URLs (phải để cuối cùng)
-    path('', kindergarten_home, name='home'),
-]
+    # Django CMS URLs (PHẢI có để CMS hoạt động)
+    path('', include('cms.urls')),
+)
 
 # Serve static files trong development
 if settings.DEBUG:

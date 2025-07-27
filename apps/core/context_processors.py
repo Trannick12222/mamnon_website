@@ -1,68 +1,92 @@
-from .models import HeroSetting
+from .models import HeroSlide, Program, Staff, Testimonial, News, Gallery, SchoolInfo
 from easy_thumbnails.files import get_thumbnailer
-import hashlib
 
 def hero_settings(request):
     """
-    Context processor để thêm ảnh hero đã crop vào template
+    Legacy context processor - backward compatibility
+    Sử dụng HeroSlide đầu tiên làm hero_bg
     """
     try:
-        setting = HeroSetting.objects.first()
-        hero_bg_url = None
+        # Lấy slide đầu tiên (active)
+        first_slide = HeroSlide.objects.filter(is_active=True).order_by('order').first()
         
-        if setting and setting.background:
-            try:
-                crop_coords = setting.cropping
-                
-                if crop_coords and crop_coords.strip():
-                    coords = crop_coords.split(',')
-                    if len(coords) == 4:
-                        # FIX: Parse float rồi round về int
-                        x = int(round(float(coords[0])))
-                        y = int(round(float(coords[1])))
-                        w = int(round(float(coords[2])))
-                        h = int(round(float(coords[3])))
-                        
-                        box = (x, y, x + w, y + h)
-                        print(f"✅ Crop coords: {crop_coords}")
-                        print(f"✅ Processed box: {box}")
-                        
-                        # Tạo unique cache key
-                        cache_key = hashlib.md5(f"{setting.background.name}_{crop_coords}".encode()).hexdigest()[:8]
-                        
-                        thumbnailer = get_thumbnailer(setting.background)
-                        cropped_image = thumbnailer.get_thumbnail({
-                            'size': (1534, 512),
-                            'crop': 'smart',
-                            'quality': 95,
-                            'box': box,
-                            'detail': True,
-                            'upscale': True,
-                            'subdir': f'hero_crops_{cache_key}',
-                        })
-                        hero_bg_url = cropped_image.url
-                        print(f"✅ Using cropped image: {hero_bg_url}")
-                    else:
-                        hero_bg_url = setting.background.url
-                        print(f"⚠️ Invalid crop coords count, using original")
-                else:
-                    hero_bg_url = setting.background.url
-                    print(f"⚠️ No crop data, using original")
-                    
-            except ValueError as e:
-                print(f"❌ ValueError parsing coords: {e}")
-                hero_bg_url = setting.background.url
-            except Exception as e:
-                print(f"❌ Error creating thumbnail: {e}")
-                hero_bg_url = setting.background.url
-        
-        return {"hero_bg": hero_bg_url}
-        
+        if first_slide:
+            hero_bg_url = first_slide.get_cropped_image_url()
+            return {"hero_bg": hero_bg_url}
+        else:
+            return {"hero_bg": None}
+            
     except Exception as e:
-        print(f"❌ Error in context processor: {e}")
+        print(f"Error in hero_settings context processor: {e}")
         return {"hero_bg": None}
 
+def site_data(request):
+    """
+    Context processor cung cấp dữ liệu cho toàn bộ site
+    """
+    try:
+        # Hero Slides (đã có crop functionality)
+        hero_slides = HeroSlide.objects.filter(is_active=True).order_by('order')[:3]
+        
+        # Programs 
+        programs = Program.objects.filter(is_active=True).order_by('order')[:6]
+        featured_programs = Program.objects.filter(is_active=True, is_featured=True).order_by('order')[:3]
+        
+        # Staff
+        staff_members = Staff.objects.filter(is_active=True).order_by('order')[:6]
+        featured_staff = Staff.objects.filter(is_active=True, is_featured=True).order_by('order')[:3]
+        
+        # Testimonials
+        testimonials = Testimonial.objects.filter(is_active=True).order_by('order')[:10]
+        
+        # News
+        latest_news = News.objects.filter(is_active=True).order_by('-publish_date')[:3]
+        featured_news = News.objects.filter(is_active=True, is_featured=True).order_by('-publish_date')[:6]
+        
+        # Gallery by categories
+        gallery_classroom = Gallery.objects.filter(category='classroom').order_by('order')[:4]
+        gallery_playground = Gallery.objects.filter(category='playground').order_by('order')[:4]
+        gallery_activities = Gallery.objects.filter(category='activities').order_by('order')[:4]
+        gallery_events = Gallery.objects.filter(category='events').order_by('order')[:4]
+        
+        # School info
+        school_info = SchoolInfo.objects.first()
+        
+        return {
+            # Hero Slides với crop functionality
+            'hero_slides': hero_slides,
+            
+            # Programs
+            'programs': programs,
+            'featured_programs': featured_programs,
+            
+            # Staff
+            'staff_members': staff_members,
+            'featured_staff': featured_staff,
+            
+            # Testimonials
+            'testimonials': testimonials,
+            
+            # News
+            'latest_news': latest_news,
+            'featured_news': featured_news,
+            
+            # Gallery
+            'gallery_classroom': gallery_classroom,
+            'gallery_playground': gallery_playground,
+            'gallery_activities': gallery_activities,
+            'gallery_events': gallery_events,
+            
+            # School
+            'school_info': school_info,
+        }
+        
+    except Exception as e:
+        print(f"Error in site_data context processor: {e}")
 def school_info(request):
+    """
+    Context processor thông tin trường (legacy)
+    """
     return {
         'school_name': 'Sunny Kids',
         'school_phone': '028 1234 5678',

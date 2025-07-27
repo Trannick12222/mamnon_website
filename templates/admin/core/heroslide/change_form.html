@@ -1,0 +1,463 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+    
+    <!-- Fix jQuery conflict BEFORE loading any cropping scripts -->
+    <script>
+    // Ensure Django jQuery is available globally
+    if (typeof django !== 'undefined' && django.jQuery) {
+        window.jQuery = django.jQuery;
+        window.$ = django.jQuery;
+        console.log('✅ Django jQuery loaded:', typeof jQuery);
+    }
+    
+    // Force jQuery to be available for image_cropping
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof django !== 'undefined' && django.jQuery) {
+            window.jQuery = django.jQuery;
+            window.$ = django.jQuery;
+        }
+    });
+    </script>
+    
+    <!-- Load Jcrop after jQuery is ready -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/2.0.4/css/Jcrop.min.css">
+    
+    <!-- Custom crop functionality -->
+    <script>
+    // Wait for Django admin to be fully loaded
+    django.jQuery(document).ready(function($) {
+        console.log('🎯 HeroSlide Crop Tool Initializing...');
+        console.log('jQuery version:', $.fn.jquery);
+        
+        // Load Jcrop dynamically to avoid conflicts
+        if (typeof $.fn.Jcrop === 'undefined') {
+            $.getScript('https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/2.0.4/js/Jcrop.min.js', function() {
+                console.log('✅ Jcrop loaded dynamically');
+                initializeCropTool($);
+            });
+        } else {
+            console.log('✅ Jcrop already available');
+            initializeCropTool($);
+        }
+        
+        function initializeCropTool($) {
+            console.log('🚀 Starting crop tool initialization');
+            
+            function createImagePreview(file) {
+                $('#image-preview').remove();
+                console.log('📁 Creating preview for:', file.name, 'Size:', file.size);
+                
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    console.log('📷 FileReader loaded, data length:', e.target.result.length);
+                    
+                    var $preview = $('<div id="image-preview" style="margin: 15px 0; padding: 20px; background: #f8f9fa; border: 2px solid #007cba; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">' +
+                        '<h4 style="margin: 0 0 15px 0; color: #0073aa; font-size: 16px; font-weight: 600;">🎬 Crop Hero Slide - Tỉ lệ 16:9 (1920×1080)</h4>' +
+                        '<p style="margin: 0 0 15px 0; color: #666; font-size: 13px;">Đang tải ảnh... Vui lòng chờ trong giây lát.</p>' +
+                        '<div id="image-container" style="position: relative; display: inline-block; background: #000; border-radius: 8px; overflow: hidden; min-height: 200px; min-width: 300px; display: flex; align-items: center; justify-content: center;">' +
+                            '<div id="loading-indicator" style="color: #fff; font-size: 14px;">⏳ Đang tải ảnh...</div>' +
+                            '<img id="crop-target" src="' + e.target.result + '" style="max-width: 800px; max-height: 500px; height: auto; display: none;" crossorigin="anonymous">' +
+                        '</div>' +
+                        '<div id="crop-coords" style="margin-top: 15px; padding: 12px; background: #e1f5fe; border: 1px solid #0288d1; border-radius: 6px; font-family: Consolas, monospace; font-size: 11px; color: #01579b;">Chờ ảnh tải xong để bắt đầu crop...</div>' +
+                        '<div id="crop-preview-container" style="margin-top: 15px; display: none;">' +
+                            '<h5 style="margin: 0 0 10px 0; color: #0073aa; font-size: 14px;">📱 Preview Crop (16:9)</h5>' +
+                            '<div style="width: 320px; height: 180px; border: 2px solid #ddd; border-radius: 6px; overflow: hidden; background: #f5f5f5; position: relative;">' +
+                                '<div id="crop-preview" style="width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;"></div>' +
+                            '</div>' +
+                        '</div>' +
+                        '</div>');
+                    
+                    $('#id_background').closest('.field-background').after($preview);
+                    
+                    // Wait for image to actually load
+                    var $img = $('#crop-target');
+                    $img.on('load', function() {
+                        console.log('✅ Image loaded successfully');
+                        console.log('Image dimensions:', this.naturalWidth, 'x', this.naturalHeight);
+                        
+                        // Hide loading indicator and show image
+                        $('#loading-indicator').hide();
+                        $img.show();
+                        
+                        // Update description
+                        $preview.find('p').first().text('Kéo để chọn vùng hiển thị cho slide. Crop sẽ được áp dụng tự động.');
+                        
+                        // Initialize crop tool
+                        setTimeout(function() {
+                            initJcrop($img);
+                        }, 100);
+                    });
+                    
+                    $img.on('error', function() {
+                        console.error('❌ Image failed to load');
+                        $('#loading-indicator').text('❌ Lỗi tải ảnh. Vui lòng thử lại.');
+                        $('#crop-coords').html('<span style="color: #d32f2f;">❌ Không thể tải ảnh. Vui lòng chọn file ảnh khác.</span>');
+                    });
+                    
+                    // Fallback timeout
+                    setTimeout(function() {
+                        if (!$img.is(':visible')) {
+                            console.warn('⚠️ Image taking too long to load, forcing display');
+                            $('#loading-indicator').hide();
+                            $img.show();
+                            setTimeout(function() {
+                                initJcrop($img);
+                            }, 100);
+                        }
+                    }, 3000);
+                };
+                
+                reader.onerror = function() {
+                    console.error('❌ FileReader error');
+                    $('#image-preview').html('<div style="color: #d32f2f; padding: 20px;">❌ Không thể đọc file. Vui lòng chọn file ảnh hợp lệ.</div>');
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            function updateCropPreview(coords, $img) {
+                const $preview = $('#crop-preview');
+                const $container = $('#crop-preview-container');
+                
+                if (coords.w > 0 && coords.h > 0) {
+                    $container.show();
+                    
+                    // Calculate scale factors
+                    const imgNaturalWidth = $img[0].naturalWidth;
+                    const imgNaturalHeight = $img[0].naturalHeight;
+                    const imgDisplayWidth = $img.width();
+                    const imgDisplayHeight = $img.height();
+                    
+                    const scaleX = imgNaturalWidth / imgDisplayWidth;
+                    const scaleY = imgNaturalHeight / imgDisplayHeight;
+                    
+                    // Convert display coordinates to natural coordinates
+                    const naturalX = coords.x * scaleX;
+                    const naturalY = coords.y * scaleY;
+                    const naturalW = coords.w * scaleX;
+                    const naturalH = coords.h * scaleY;
+                    
+                    // Calculate background position and size for preview
+                    const previewWidth = 320;
+                    const previewHeight = 180;
+                    
+                    const bgSize = Math.max(
+                        (previewWidth / naturalW) * imgNaturalWidth,
+                        (previewHeight / naturalH) * imgNaturalHeight
+                    );
+                    
+                    const bgPosX = -(naturalX / naturalW) * previewWidth;
+                    const bgPosY = -(naturalY / naturalH) * previewHeight;
+                    
+                    $preview.css({
+                        'background-image': 'url(' + $img.attr('src') + ')',
+                        'background-size': bgSize + 'px auto',
+                        'background-position': bgPosX + 'px ' + bgPosY + 'px'
+                    });
+                } else {
+                    $container.hide();
+                }
+            }
+            
+            function initJcrop($img) {
+                var $croppingInput = $('#id_cropping');
+                console.log('🎯 Initializing Jcrop for image:', $img.attr('src').substring(0, 50) + '...');
+                
+                if ($img.data('Jcrop')) {
+                    $img.data('Jcrop').destroy();
+                }
+                
+                function startJcrop() {
+                    try {
+                        // Wait for image to be fully rendered
+                        if (!$img.is(':visible') || $img.width() === 0 || $img.height() === 0) {
+                            console.warn('⚠️ Image not ready, retrying in 500ms...');
+                            setTimeout(startJcrop, 500);
+                            return;
+                        }
+                        
+                        console.log('📐 Image ready - Display size:', $img.width(), 'x', $img.height());
+                        console.log('📐 Natural size:', $img[0].naturalWidth, 'x', $img[0].naturalHeight);
+                        
+                        // Calculate initial selection (center 60% of image)
+                        const imgW = $img.width();
+                        const imgH = $img.height();
+                        const centerX = imgW / 2;
+                        const centerY = imgH / 2;
+                        
+                        // Calculate 16:9 selection that fits in image
+                        let selW = Math.min(imgW * 0.8, imgW);
+                        let selH = selW * (9/16);
+                        
+                        if (selH > imgH * 0.8) {
+                            selH = imgH * 0.8;
+                            selW = selH * (16/9);
+                        }
+                        
+                        const startX = Math.max(0, centerX - selW/2);
+                        const startY = Math.max(0, centerY - selH/2);
+                        
+                        console.log('🎯 Initial selection:', startX, startY, selW, selH);
+                        
+                        $img.Jcrop({
+                            aspectRatio: 16/9,
+                            setSelect: [startX, startY, startX + selW, startY + selH],
+                            minSize: [160, 90], // Minimum 160x90 pixels
+                            maxSize: [imgW, imgH], // Maximum image size
+                            boxWidth: Math.min(800, imgW),
+                            boxHeight: Math.min(450, imgH),
+                            bgColor: 'rgba(0,0,0,0.6)',
+                            bgOpacity: 0.7,
+                            handleOffset: 8,
+                            handleSize: 12,
+                            allowSelect: true,
+                            allowMove: true,
+                            allowResize: true,
+                            keySupport: false, // Disable keyboard to prevent conflicts
+                            onSelect: function(coords) {
+                                if (coords.w === 0 || coords.h === 0) return;
+                                
+                                var x = Math.round(coords.x);
+                                var y = Math.round(coords.y);
+                                var w = Math.round(coords.w);
+                                var h = Math.round(coords.h);
+                                
+                                var cropValue = x + ',' + y + ',' + w + ',' + h;
+                                $croppingInput.val(cropValue);
+                                
+                                // Update preview
+                                updateCropPreview(coords, $img);
+                                
+                                $('#crop-coords').html(
+                                    '<strong>📐 Crop Coordinates:</strong> ' + cropValue + 
+                                    '<br><strong>📏 Display Size:</strong> ' + w + '×' + h + ' pixels' +
+                                    '<br><strong>🎯 Aspect Ratio:</strong> ' + (w/h).toFixed(2) + ':1 (16:9 = 1.78:1)' +
+                                    '<br><strong>✨ Status:</strong> <span style="color: #2e7d32;">Crop applied successfully!</span>'
+                                );
+                                
+                                console.log('✅ HeroSlide crop set:', cropValue);
+                            },
+                            onChange: function(coords) {
+                                // Real-time preview update
+                                if (coords.w > 0 && coords.h > 0) {
+                                    updateCropPreview(coords, $img);
+                                }
+                            }
+                        }, function() {
+                            console.log('✅ Jcrop initialized successfully');
+                            
+                            // Trigger initial selection
+                            var api = this;
+                            setTimeout(function() {
+                                api.setSelect([startX, startY, startX + selW, startY + selH]);
+                            }, 100);
+                            
+                            // Load existing crop if available
+                            var existingCrop = $croppingInput.val();
+                            if (existingCrop && existingCrop.trim()) {
+                                console.log('🔄 Loading existing crop:', existingCrop);
+                                var coords = existingCrop.split(',');
+                                if (coords.length === 4) {
+                                    var x = Math.round(parseFloat(coords[0]));
+                                    var y = Math.round(parseFloat(coords[1]));
+                                    var w = Math.round(parseFloat(coords[2]));
+                                    var h = Math.round(parseFloat(coords[3]));
+                                    
+                                    // Validate coordinates
+                                    if (x >= 0 && y >= 0 && w > 0 && h > 0 && 
+                                        x + w <= imgW && y + h <= imgH) {
+                                        api.setSelect([x, y, x + w, y + h]);
+                                        console.log('✅ Loaded existing crop:', x, y, w, h);
+                                    } else {
+                                        console.warn('⚠️ Invalid existing crop coordinates, using default');
+                                    }
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error('❌ Error initializing Jcrop:', error);
+                        $('#crop-coords').html('<span style="color: #d32f2f;">❌ Lỗi khởi tạo crop tool: ' + error.message + '</span>');
+                    }
+                }
+                
+                // Multiple checks to ensure image is ready
+                var attempts = 0;
+                var maxAttempts = 10;
+                
+                function checkImageReady() {
+                    attempts++;
+                    if ($img[0].complete && $img[0].naturalWidth > 0 && $img.is(':visible')) {
+                        console.log('✅ Image ready after', attempts, 'attempts');
+                        startJcrop();
+                    } else if (attempts < maxAttempts) {
+                        console.log('⏳ Waiting for image, attempt', attempts);
+                        setTimeout(checkImageReady, 200);
+                    } else {
+                        console.error('❌ Image failed to load after', maxAttempts, 'attempts');
+                        $('#crop-coords').html('<span style="color: #d32f2f;">❌ Ảnh không tải được. Vui lòng thử lại.</span>');
+                    }
+                }
+                
+                checkImageReady();
+            }
+            
+            // Handle new file uploads
+            $('#id_background').change(function(e) {
+                var file = e.target.files[0];
+                console.log('📁 File input changed:', file);
+                
+                if (file && file.type.startsWith('image/')) {
+                    console.log('📁 Valid image file selected:', file.name, 'Type:', file.type, 'Size:', file.size);
+                    
+                    // Validate file size (max 10MB)
+                    if (file.size > 10 * 1024 * 1024) {
+                        alert('⚠️ File quá lớn! Vui lòng chọn ảnh nhỏ hơn 10MB.');
+                        return;
+                    }
+                    
+                    createImagePreview(file);
+                } else if (file) {
+                    console.error('❌ Invalid file type:', file.type);
+                    alert('⚠️ Vui lòng chọn file ảnh (JPG, PNG, GIF, WebP)');
+                } else {
+                    console.log('📁 No file selected or file cleared');
+                    $('#image-preview').remove();
+                }
+            });
+            
+            // Handle existing images
+            function checkExistingImage() {
+                var $existingLink = $('.file-upload a[href*="hero_slides"], .file-upload a[href*="media"]').first();
+                
+                if ($existingLink.length) {
+                    var imageUrl = $existingLink.attr('href');
+                    console.log('🖼️ Found existing image:', imageUrl);
+                    
+                    var $preview = $('<div id="image-preview" style="margin: 15px 0; padding: 20px; background: #f0f8f0; border: 2px solid #4caf50; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">' +
+                        '<h4 style="margin: 0 0 15px 0; color: #2e7d32; font-size: 16px; font-weight: 600;">🎬 Current Hero Slide - Adjust Crop (16:9)</h4>' +
+                        '<p style="margin: 0 0 15px 0; color: #666; font-size: 13px;">Kéo để điều chỉnh vùng hiển thị. Tỉ lệ cố định 16:9 để phù hợp với slider.</p>' +
+                        '<div style="position: relative; display: inline-block; background: #000; border-radius: 8px; overflow: hidden;">' +
+                            '<img id="crop-target" src="' + imageUrl + '" style="max-width: 100%; max-height: 400px; height: auto; display: block;">' +
+                        '</div>' +
+                        '<div id="crop-coords" style="margin-top: 15px; padding: 12px; background: #e8f5e9; border: 1px solid #4caf50; border-radius: 6px; font-family: Consolas, monospace; font-size: 11px; color: #1b5e20;"></div>' +
+                        '<div id="crop-preview-container" style="margin-top: 15px; display: none;">' +
+                            '<h5 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 14px;">📱 Preview Crop (16:9)</h5>' +
+                            '<div style="width: 320px; height: 180px; border: 2px solid #4caf50; border-radius: 6px; overflow: hidden; background: #f5f5f5; position: relative;">' +
+                                '<div id="crop-preview" style="width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;"></div>' +
+                            '</div>' +
+                        '</div>' +
+                        '</div>');
+                    
+                    $('#id_background').closest('.field-background').after($preview);
+                    
+                    setTimeout(function() { 
+                        initJcrop($('#crop-target')); 
+                    }, 500);
+                }
+            }
+            
+            // Check for existing image after page load
+            setTimeout(checkExistingImage, 1000);
+            
+            // Also check when page changes
+            $(document).on('DOMSubtreeModified', function() {
+                if (!$('#image-preview').length) {
+                    setTimeout(checkExistingImage, 500);
+                }
+            });
+        }
+    });
+    </script>
+    
+    <style>
+    /* Enhanced Jcrop styling */
+    .jcrop-holder {
+        text-align: left;
+        margin: 0 auto;
+        background: #000;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    
+    .jcrop-handle {
+        background-color: #ffffff !important;
+        border: 2px solid #007cba !important;
+        width: 12px !important;
+        height: 12px !important;
+        border-radius: 50% !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+        cursor: grab !important;
+    }
+    
+    .jcrop-handle:hover {
+        background-color: #007cba !important;
+        transform: scale(1.1) !important;
+        cursor: grabbing !important;
+    }
+    
+    .jcrop-tracker {
+        background-color: rgba(0, 124, 186, 0.3) !important;
+        cursor: move !important;
+    }
+    
+    .jcrop-vline, .jcrop-hline {
+        background-color: #007cba !important;
+        opacity: 0.8 !important;
+    }
+    
+    /* Rule of thirds grid */
+    .jcrop-holder .jcrop-vline:nth-child(1),
+    .jcrop-holder .jcrop-vline:nth-child(2) {
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        opacity: 0.6 !important;
+    }
+    
+    .jcrop-holder .jcrop-hline:nth-child(1),
+    .jcrop-holder .jcrop-hline:nth-child(2) {
+        background-color: rgba(255, 255, 255, 0.3) !important;
+        opacity: 0.6 !important;
+    }
+    
+    /* Hide default django-image-cropping if it conflicts */
+    .image-cropping-original {
+        display: none !important;
+    }
+    
+    /* Ensure preview container looks good */
+    #crop-preview-container {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        #crop-preview-container > div {
+            width: 240px !important;
+            height: 135px !important;
+        }
+        
+        .jcrop-holder {
+            max-width: 100% !important;
+        }
+    }
+    
+    /* Better visual feedback */
+    #crop-coords {
+        transition: all 0.3s ease;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+    
+    #crop-coords:hover {
+        background: #bbdefb !important;
+        border-color: #1976d2 !important;
+    }
+    </style>
+{% endblock %}
