@@ -1,0 +1,221 @@
+<!-- templates/components/header.html -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-lg transition-all duration-300">
+    <nav class="container-sunny">
+        <div class="flex justify-between items-center py-4">
+            <!-- Logo -->
+            <a href="/" class="flex items-center space-x-3 group">
+                <div class="w-12 h-12 bg-gradient-to-r from-sunny-yellow to-sunny-pink rounded-full flex items-center justify-center text-2xl group-hover:animate-wiggle transition-all">
+                    🌟
+                </div>
+                <span class="text-2xl font-display font-bold gradient-text">Sunny Kids</span>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-link">Trang chủ</a>
+                <a href="#about" class="nav-link">Giới thiệu</a>
+                <a href="#programs" class="nav-link">Chương trình</a>
+                <a href="#gallery" class="nav-link">Thư viện</a>
+                <a href="#staff" class="nav-link">Giáo viên</a>
+                <a href="#contact" class="nav-link">Liên hệ</a>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <button class="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors" 
+                    id="mobile-menu-button"
+                    aria-label="Toggle menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="py-4 space-y-2">
+                <a href="#home" class="mobile-nav-link">Trang chủ</a>
+                <a href="#about" class="mobile-nav-link">Giới thiệu</a>
+                <a href="#programs" class="mobile-nav-link">Chương trình</a>
+                <a href="#gallery" class="mobile-nav-link">Thư viện</a>
+                <a href="#staff" class="mobile-nav-link">Giáo viên</a>
+                <a href="#contact" class="mobile-nav-link">Liên hệ</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- templates/components/section_header.html -->
+<div class="section-header">
+    <h2 class="section-title">
+        {{ title_before }}<span class="gradient-text">{{ title_highlight }}</span>{{ title_after }}
+    </h2>
+    {% if subtitle %}
+    <p class="section-subtitle">{{ subtitle }}</p>
+    {% endif %}
+</div>
+
+<!-- templates/components/program_card.html -->
+<div class="program-card group">
+    <div class="h-48 bg-gradient-to-br {{ gradient_colors }} flex items-center justify-center text-6xl text-white relative overflow-hidden">
+        <span class="transform group-hover:scale-110 transition-transform duration-300">{{ icon }}</span>
+        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all duration-300"></div>
+    </div>
+    <div class="p-6">
+        <h3 class="text-xl font-display font-semibold text-gray-900 mb-2">{{ name }}</h3>
+        <div class="inline-block bg-{{ badge_color }}/10 text-{{ badge_color }} px-3 py-1 rounded-full text-sm font-medium mb-3">
+            {{ age_range }}
+        </div>
+        <p class="text-gray-600 leading-relaxed">{{ description }}</p>
+        {% if features %}
+        <div class="mt-4 space-y-2">
+            {% for feature in features %}
+            <div class="flex items-center space-x-2 text-sm text-gray-600">
+                <span class="text-sunny-yellow">✨</span>
+                <span>{{ feature }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- templates/components/staff_card.html -->
+<div class="staff-card">
+    {% if photo %}
+    <img src="{{ photo.url }}" alt="{{ name }}" 
+         class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-sunny-pink/20">
+    {% else %}
+    <div class="w-24 h-24 bg-gradient-to-r from-sunny-pink to-sunny-blue rounded-full mx-auto mb-4 flex items-center justify-center text-3xl text-white">
+        {{ default_avatar|default:"👨‍🏫" }}
+    </div>
+    {% endif %}
+    
+    <h3 class="text-lg font-display font-semibold text-gray-900 mb-1">{{ name }}</h3>
+    <p class="text-sunny-pink font-medium mb-2">{{ role }}</p>
+    {% if experience_years %}
+    <p class="text-sm text-gray-500 mb-3">{{ experience_years }} năm kinh nghiệm</p>
+    {% endif %}
+    <p class="text-gray-600 text-sm leading-relaxed">{{ description|truncatewords:20 }}</p>
+    
+    {% if specialization %}
+    <div class="mt-3 inline-block bg-sunny-blue/10 text-sunny-blue px-3 py-1 rounded-full text-xs font-medium">
+        {{ specialization }}
+    </div>
+    {% endif %}
+</div>
+
+<!-- templates/components/news_card.html -->
+<article class="card-sunny overflow-hidden">
+    {% if thumbnail %}
+    <img src="{{ thumbnail.url }}" alt="{{ title }}" 
+         class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+    {% else %}
+    <div class="w-full h-48 bg-gradient-to-br from-sunny-yellow to-sunny-pink flex items-center justify-center text-4xl text-white">
+        📰
+    </div>
+    {% endif %}
+    
+    <div class="p-6">
+        <time class="text-sunny-pink text-sm font-medium">
+            {{ publish_date|date:"d/m/Y" }}
+        </time>
+        <h3 class="text-lg font-display font-semibold text-gray-900 mt-2 mb-3 line-clamp-2">
+            {{ title }}
+        </h3>
+        <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-3">
+            {{ excerpt }}
+        </p>
+        <a href="{{ get_absolute_url }}" 
+           class="inline-flex items-center text-sunny-blue font-medium text-sm hover:text-sunny-pink transition-colors">
+            Đọc thêm 
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+        </a>
+    </div>
+</article>
+
+<!-- templates/components/contact_form.html -->
+<form method="post" action="/contact-form/" class="space-y-6" id="contact-form">
+    {% csrf_token %}
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label for="parent_name" class="block text-sm font-medium mb-2">
+                Họ tên phụ huynh <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="parent_name" name="parent_name" required
+                   class="form-input {% if dark_mode %}form-input-dark{% endif %}"
+                   placeholder="Nhập họ tên của bạn">
+        </div>
+        
+        <div>
+            <label for="phone" class="block text-sm font-medium mb-2">
+                Số điện thoại <span class="text-red-500">*</span>
+            </label>
+            <input type="tel" id="phone" name="phone" required
+                   class="form-input {% if dark_mode %}form-input-dark{% endif %}"
+                   placeholder="Nhập số điện thoại">
+        </div>
+    </div>
+    
+    <div>
+        <label for="email" class="block text-sm font-medium mb-2">Email</label>
+        <input type="email" id="email" name="email"
+               class="form-input {% if dark_mode %}form-input-dark{% endif %}"
+               placeholder="Nhập email của bạn">
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <label for="child_age" class="block text-sm font-medium mb-2">Tuổi của bé</label>
+            <select id="child_age" name="child_age"
+                    class="form-input {% if dark_mode %}form-input-dark{% endif %}">
+                <option value="">Chọn độ tuổi</option>
+                <option value="6-18months">6-18 tháng</option>
+                <option value="18-36months">18-36 tháng</option>
+                <option value="3-4years">3-4 tuổi</option>
+                <option value="4-5years">4-5 tuổi</option>
+            </select>
+        </div>
+        
+        <div>
+            <label for="program" class="block text-sm font-medium mb-2">Chương trình quan tâm</label>
+            <select id="program" name="program"
+                    class="form-input {% if dark_mode %}form-input-dark{% endif %}">
+                <option value="">Chọn chương trình</option>
+                <option value="nursery">Lớp Nhà trẻ</option>
+                <option value="toddler">Lớp Mầm</option>
+                <option value="preschool">Lớp Chồi</option>
+                <option value="kindergarten">Lớp Lá</option>
+            </select>
+        </div>
+    </div>
+    
+    <div>
+        <label for="message" class="block text-sm font-medium mb-2">Ghi chú</label>
+        <textarea id="message" name="message" rows="4"
+                  class="form-input {% if dark_mode %}form-input-dark{% endif %}"
+                  placeholder="Nhập ghi chú hoặc câu hỏi của bạn"></textarea>
+    </div>
+    
+    <button type="submit" class="btn-primary w-full md:w-auto">
+        <span class="flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            Gửi đăng ký
+        </span>
+    </button>
+</form>
+
+<!-- templates/components/loading_spinner.html -->
+<div class="flex items-center justify-center p-8">
+    <div class="relative">
+        <div class="w-12 h-12 border-4 border-sunny-pink/20 border-t-sunny-pink rounded-full animate-spin"></div>
+        <div class="absolute inset-0 w-12 h-12 border-4 border-transparent border-r-sunny-blue rounded-full animate-spin animation-delay-150"></div>
+    </div>
+    {% if message %}
+    <p class="ml-4 text-gray-600">{{ message }}</p>
+    {% endif %}
+</div>

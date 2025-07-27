@@ -21,7 +21,7 @@ DJANGO_APPS = [
 ]
 
 CMS_APPS = [
-     'cms',
+    'cms',
     'menus',
     'treebeard',
     'sekizai',
@@ -32,17 +32,10 @@ THIRD_PARTY_APPS = [
     'easy_thumbnails',
     'image_cropping',  # PHẢI sau easy_thumbnails
     'filer',
+    # 'compressor',  # Uncomment for production optimization
 ]
 
-CUSTOM_APPS = [ 
-    'apps.contacts',
-    'apps.core',
-    'apps.news',
-    'apps.programs',
-    'apps.schools',
-    'apps.testimonials',
-    ]
-
+# Fixed: Remove duplicate apps
 LOCAL_APPS = [
     'apps.core',
     'apps.schools',
@@ -77,12 +70,16 @@ ROOT_URLCONF = 'mamnon_project.urls'
 # Templates
 TEMPLATES = [
     {
-         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            BASE_DIR / 'templates',
+            # Support for component-based templates
+            BASE_DIR / 'templates' / 'components',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                 'django.template.context_processors.debug',
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -135,11 +132,18 @@ LANGUAGES = [
     ('en', 'English'),
 ]
 
-# Static files (CSS, JavaScript, Images)
+# Static files (CSS, JavaScript, Images) - Optimized for Tailwind
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
+]
+
+# Static files optimization
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # 'compressor.finders.CompressorFinder',  # Uncomment for production
 ]
 
 # Media files
@@ -157,6 +161,7 @@ CMS_TEMPLATES = [
     ('cms/home.html', 'Trang chủ'),
     ('cms/page.html', 'Trang nội dung'),
     ('cms/contact.html', 'Liên hệ'),
+    ('base.html', 'Base Template với Tailwind'),  # Added for Tailwind
 ]
 
 # CMS Permissions
@@ -180,7 +185,6 @@ CMS_LANGUAGES = {
     ],
 }
 
-
 # CMS Toolbar
 CMS_TOOLBAR_ANONYMOUS_ON = False
 
@@ -189,26 +193,24 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Hoặc SMTP server của bạn
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@gmail.com'
-EMAIL_HOST_PASSWORD = 'your-app-password'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='your-email@gmail.com')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='your-app-password')
 DEFAULT_FROM_EMAIL = 'Sunny Kids <your-email@gmail.com>'
 
-# Thêm vào cuối file base.py
+# Security settings
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-
-# Hoặc nếu vẫn lỗi, dùng:
-# X_FRAME_OPTIONS = 'ALLOWALL'
+SECURE_FRAME_DENY = False
 
 # Django CMS specific settings
-CMS_TOOLBAR_ANONYMOUS_ON = True
 CMS_TOOLBAR_URL__EDIT_ON = 'edit'
 CMS_TOOLBAR_URL__EDIT_OFF = 'edit_off'
 CMS_TOOLBAR_URL__BUILD = 'build'
-
-# Security settings cho development
-SECURE_FRAME_DENY = False
 CMS_WIZARD_ENABLE = False
 CMS_CONFIRM_VERSION4 = True
+
+# ==================== IMAGE PROCESSING & THUMBNAILS ====================
+
+# Easy Thumbnails configuration
 THUMBNAIL_PROCESSORS = (
     'image_cropping.thumbnail_processors.crop_corners',
     'easy_thumbnails.processors.colorspace',
@@ -217,13 +219,167 @@ THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.filters',
 )
 
-# Cấu hình thumbnail aliases
+# Optimized thumbnail aliases for responsive design
 THUMBNAIL_ALIASES = {
     '': {
-        'hero': {'size': (1534, 512), 'crop': True, 'quality': 95},
+        # Hero slides với responsive breakpoints
+        'hero_xl': {'size': (1920, 1080), 'crop': True, 'quality': 95},      # Desktop large
+        'hero_lg': {'size': (1534, 862), 'crop': True, 'quality': 90},       # Desktop
+        'hero_md': {'size': (1200, 675), 'crop': True, 'quality': 85},       # Tablet landscape
+        'hero_sm': {'size': (800, 450), 'crop': True, 'quality': 80},        # Tablet portrait
+        'hero_xs': {'size': (640, 360), 'crop': True, 'quality': 75},        # Mobile
+        
+        # Program cards (4:3 ratio)
+        'program_lg': {'size': (400, 300), 'crop': True, 'quality': 85},
+        'program_md': {'size': (300, 225), 'crop': True, 'quality': 80},
+        'program_sm': {'size': (200, 150), 'crop': True, 'quality': 75},
+        
+        # Staff photos (1:1 square)
+        'staff_lg': {'size': (400, 400), 'crop': True, 'quality': 90},
+        'staff_md': {'size': (200, 200), 'crop': True, 'quality': 85},
+        'staff_sm': {'size': (120, 120), 'crop': True, 'quality': 80},
+        
+        # Gallery images (flexible)
+        'gallery_lg': {'size': (800, 600), 'crop': True, 'quality': 90},
+        'gallery_md': {'size': (600, 400), 'crop': True, 'quality': 85},
+        'gallery_sm': {'size': (300, 200), 'crop': True, 'quality': 80},
+        'gallery_thumb': {'size': (150, 150), 'crop': True, 'quality': 75},
+        
+        # News thumbnails (16:10 ratio)
+        'news_lg': {'size': (800, 500), 'crop': True, 'quality': 90},
+        'news_md': {'size': (400, 250), 'crop': True, 'quality': 85},
+        'news_sm': {'size': (320, 200), 'crop': True, 'quality': 80},
+        
+        # Admin previews
+        'admin_preview': {'size': (150, 100), 'crop': True, 'quality': 80},
+    }
+}
+
+# Image cropping settings
+IMAGE_CROPPING_JQUERY_URL = None  # Sử dụng jQuery có sẵn
+IMAGE_CROPPING_SIZE_WARNING = True
+IMAGE_CROPPING_BACKEND = 'image_cropping.backends.easy_thumbs.EasyThumbnailsBackend'
+
+# ==================== TAILWIND CSS SETTINGS ====================
+
+# Tailwind CSS development settings
+TAILWIND_CSS_DEV_MODE = config('DEBUG', default=True, cast=bool)
+
+# Content Security Policy for Tailwind (development)
+if TAILWIND_CSS_DEV_MODE:
+    # Allow inline styles for Tailwind CDN in development
+    CSP_STYLE_SRC = ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com", "https://fonts.googleapis.com"]
+    CSP_SCRIPT_SRC = ["'self'", "'unsafe-inline'", "https://cdn.tailwindcss.com"]
+    CSP_FONT_SRC = ["'self'", "https://fonts.gstatic.com"]
+else:
+    # Strict CSP for production
+    CSP_STYLE_SRC = ["'self'", "https://fonts.googleapis.com"]
+    CSP_SCRIPT_SRC = ["'self'"]
+    CSP_FONT_SRC = ["'self'", "https://fonts.gstatic.com"]
+
+# ==================== PERFORMANCE OPTIMIZATION ====================
+
+# Caching (for production)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    }
+}
+
+# Session optimization
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 1209600  # 2 weeks
+
+# ==================== LOGGING ====================
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'django.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'apps': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'tailwind': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
     },
 }
 
-# Cho phép crop tự do (không bắt buộc tỉ lệ cố định)
-IMAGE_CROPPING_JQUERY_URL = None  # Sử dụng jQuery có sẵn
-IMAGE_CROPPING_SIZE_WARNING = True
+# Tạo thư mục logs nếu chưa có
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
+# ==================== CUSTOM SETTINGS ====================
+
+# Custom context data for templates
+SITE_CONTEXT = {
+    'site_name': 'Sunny Kids',
+    'site_description': 'Mầm non song ngữ quốc tế hàng đầu tại TP.HCM',
+    'default_image': '/static/images/logo.png',
+    'social_media': {
+        'facebook': 'https://facebook.com/sunnykids',
+        'youtube': 'https://youtube.com/sunnykids',
+        'instagram': 'https://instagram.com/sunnykids',
+    }
+}
+
+# Contact form settings
+CONTACT_EMAIL = config('CONTACT_EMAIL', default='info@sunnykids.edu.vn')
+ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@sunnykids.edu.vn')
+
+# File upload settings
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024  # 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+
+# ==================== INTERNATIONALIZATION ====================
+
+# Locale paths
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
+]
+
+# Date and number formats
+DATE_FORMAT = 'd/m/Y'
+DATETIME_FORMAT = 'd/m/Y H:i'
+SHORT_DATE_FORMAT = 'd/m/y'

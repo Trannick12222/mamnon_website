@@ -1,0 +1,14 @@
+INFO 2025-07-27 22:26:08,809 autoreload 27500 28980 Watching for file changes with StatReloader
+INFO 2025-07-27 22:26:58,983 basehttp 27500 31000 "GET / HTTP/1.1" 302 0
+INFO 2025-07-27 22:26:59,039 basehttp 27500 30944 "GET /vi/ HTTP/1.1" 200 55370
+INFO 2025-07-27 22:26:59,283 basehttp 27500 29836 "GET /media/hero_slides/corn-cobs-plantation-field-600nw-2477557971.webp HTTP/1.1" 200 76222
+INFO 2025-07-27 22:26:59,286 basehttp 27500 30944 "GET /media/hero_slides/62681_10_24.jpeg HTTP/1.1" 200 134225
+INFO 2025-07-27 22:26:59,288 basehttp 27500 1944 "GET /media/hero_backgrounds/chil1_fDTcPMM.png HTTP/1.1" 302 0
+WARNING 2025-07-27 22:26:59,482 log 27500 30944 Not Found: /vi/media/hero_backgrounds/chil1_fDTcPMM.png/
+WARNING 2025-07-27 22:26:59,483 basehttp 27500 30944 "GET /vi/media/hero_backgrounds/chil1_fDTcPMM.png/ HTTP/1.1" 404 3803
+INFO 2025-07-27 22:27:19,460 basehttp 27500 30944 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 302 0
+WARNING 2025-07-27 22:27:19,474 log 27500 29836 Not Found: /vi/.well-known/appspecific/com.chrome.devtools.json/
+WARNING 2025-07-27 22:27:19,475 basehttp 27500 29836 "GET /vi/.well-known/appspecific/com.chrome.devtools.json/ HTTP/1.1" 404 3827
+INFO 2025-07-27 22:29:15,222 basehttp 27500 29836 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 302 0
+WARNING 2025-07-27 22:29:15,236 log 27500 19228 Not Found: /vi/.well-known/appspecific/com.chrome.devtools.json/
+WARNING 2025-07-27 22:29:15,237 basehttp 27500 19228 "GET /vi/.well-known/appspecific/com.chrome.devtools.json/ HTTP/1.1" 404 3827
