@@ -165,7 +165,9 @@
                 var $croppingInput = $('#id_cropping');
                 console.log('🎯 Initializing Jcrop for image:', $img.attr('src').substring(0, 50) + '...');
                 
+                // Destroy any existing Jcrop instance
                 if ($img.data('Jcrop')) {
+                    console.log('🔄 Destroying existing Jcrop instance');
                     $img.data('Jcrop').destroy();
                 }
                 
@@ -248,15 +250,11 @@
                         }, function() {
                             console.log('✅ Jcrop initialized successfully');
                             
-                            // Trigger initial selection
-                            var api = this;
-                            setTimeout(function() {
-                                api.setSelect([startX, startY, startX + selW, startY + selH]);
-                            }, 100);
-                            
                             // Load existing crop if available
                             var existingCrop = $croppingInput.val();
-                            if (existingCrop && existingCrop.trim()) {
+                            console.log('🔍 Checking existing crop value:', existingCrop);
+                            
+                            if (existingCrop && existingCrop.trim() && existingCrop !== '0,0,0,0') {
                                 console.log('🔄 Loading existing crop:', existingCrop);
                                 var coords = existingCrop.split(',');
                                 if (coords.length === 4) {
@@ -265,15 +263,48 @@
                                     var w = Math.round(parseFloat(coords[2]));
                                     var h = Math.round(parseFloat(coords[3]));
                                     
+                                    console.log('🎯 Parsed coordinates:', {x, y, w, h});
+                                    console.log('🖼️ Image bounds:', {width: imgW, height: imgH});
+                                    
                                     // Validate coordinates
                                     if (x >= 0 && y >= 0 && w > 0 && h > 0 && 
                                         x + w <= imgW && y + h <= imgH) {
-                                        api.setSelect([x, y, x + w, y + h]);
-                                        console.log('✅ Loaded existing crop:', x, y, w, h);
+                                        
+                                        var api = this;
+                                        setTimeout(function() {
+                                            api.setSelect([x, y, x + w, y + h]);
+                                            console.log('✅ Applied existing crop:', x, y, w, h);
+                                            
+                                            // Update coords display and preview
+                                            $('#crop-coords').html(
+                                                '<strong>📐 Crop Coordinates:</strong> ' + existingCrop + 
+                                                '<br><strong>📏 Display Size:</strong> ' + w + '×' + h + ' pixels' +
+                                                '<br><strong>🎯 Aspect Ratio:</strong> ' + (w/h).toFixed(2) + ':1 (16:9 = 1.78:1)' +
+                                                '<br><strong>✨ Status:</strong> <span style="color: #2e7d32;">Existing crop loaded!</span>'
+                                            );
+                                            
+                                            updateCropPreview({x: x, y: y, w: w, h: h}, $img);
+                                        }, 200);
                                     } else {
                                         console.warn('⚠️ Invalid existing crop coordinates, using default');
+                                        var api = this;
+                                        setTimeout(function() {
+                                            api.setSelect([startX, startY, startX + selW, startY + selH]);
+                                        }, 200);
                                     }
+                                } else {
+                                    console.warn('⚠️ Invalid crop format, using default');
+                                    var api = this;
+                                    setTimeout(function() {
+                                        api.setSelect([startX, startY, startX + selW, startY + selH]);
+                                    }, 200);
                                 }
+                            } else {
+                                console.log('🎯 No existing crop, using default selection');
+                                var api = this;
+                                setTimeout(function() {
+                                    api.setSelect([startX, startY, startX + selW, startY + selH]);
+                                }, 200);
                             }
                         });
                     } catch (error) {
@@ -284,7 +315,7 @@
                 
                 // Multiple checks to ensure image is ready
                 var attempts = 0;
-                var maxAttempts = 10;
+                var maxAttempts = 15;
                 
                 function checkImageReady() {
                     attempts++;
@@ -293,10 +324,10 @@
                         startJcrop();
                     } else if (attempts < maxAttempts) {
                         console.log('⏳ Waiting for image, attempt', attempts);
-                        setTimeout(checkImageReady, 200);
+                        setTimeout(checkImageReady, 300);
                     } else {
                         console.error('❌ Image failed to load after', maxAttempts, 'attempts');
-                        $('#crop-coords').html('<span style="color: #d32f2f;">❌ Ảnh không tải được. Vui lòng thử lại.</span>');
+                        $('#crop-coords').html('<span style="color: #d32f2f;">❌ Ảnh không tải được. Vui lòng refresh trang và thử lại.</span>');
                     }
                 }
                 
@@ -327,45 +358,135 @@
                 }
             });
             
-            // Handle existing images
+            // IMPROVED: Handle existing images - Multiple strategies
             function checkExistingImage() {
-                var $existingLink = $('.file-upload a[href*="hero_slides"], .file-upload a[href*="media"]').first();
+                console.log('🔍 Checking for existing image...');
+                
+                // Strategy 1: Find link in file-upload area
+                var $existingLink = $('.file-upload a').filter(function() {
+                    var href = $(this).attr('href') || '';
+                    return href.includes('hero_slides') || 
+                           href.includes('media') || 
+                           href.includes('.jpg') || 
+                           href.includes('.jpeg') || 
+                           href.includes('.png') || 
+                           href.includes('.gif') || 
+                           href.includes('.webp');
+                }).first();
+                
+                // Strategy 2: Find any img tag with src
+                if (!$existingLink.length) {
+                    console.log('🔍 Strategy 1 failed, trying strategy 2...');
+                    var $existingImg = $('.field-background img, .file-upload img').first();
+                    if ($existingImg.length && $existingImg.attr('src')) {
+                        var imageUrl = $existingImg.attr('src');
+                        console.log('🖼️ Found existing image via img tag:', imageUrl);
+                        createExistingImagePreview(imageUrl);
+                        return;
+                    }
+                }
+                
+                // Strategy 3: Look for Currently field value
+                if (!$existingLink.length) {
+                    console.log('🔍 Strategy 2 failed, trying strategy 3...');
+                    var $currentlyDiv = $('.field-background .form-row').find('div:contains("Currently:")');
+                    if ($currentlyDiv.length) {
+                        var $link = $currentlyDiv.find('a').first();
+                        if ($link.length) {
+                            $existingLink = $link;
+                            console.log('🖼️ Found existing image via Currently field');
+                        }
+                    }
+                }
                 
                 if ($existingLink.length) {
                     var imageUrl = $existingLink.attr('href');
                     console.log('🖼️ Found existing image:', imageUrl);
-                    
-                    var $preview = $('<div id="image-preview" style="margin: 15px 0; padding: 20px; background: #f0f8f0; border: 2px solid #4caf50; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">' +
-                        '<h4 style="margin: 0 0 15px 0; color: #2e7d32; font-size: 16px; font-weight: 600;">🎬 Current Hero Slide - Adjust Crop (16:9)</h4>' +
-                        '<p style="margin: 0 0 15px 0; color: #666; font-size: 13px;">Kéo để điều chỉnh vùng hiển thị. Tỉ lệ cố định 16:9 để phù hợp với slider.</p>' +
-                        '<div style="position: relative; display: inline-block; background: #000; border-radius: 8px; overflow: hidden;">' +
-                            '<img id="crop-target" src="' + imageUrl + '" style="max-width: 100%; max-height: 400px; height: auto; display: block;">' +
-                        '</div>' +
-                        '<div id="crop-coords" style="margin-top: 15px; padding: 12px; background: #e8f5e9; border: 1px solid #4caf50; border-radius: 6px; font-family: Consolas, monospace; font-size: 11px; color: #1b5e20;"></div>' +
-                        '<div id="crop-preview-container" style="margin-top: 15px; display: none;">' +
-                            '<h5 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 14px;">📱 Preview Crop (16:9)</h5>' +
-                            '<div style="width: 320px; height: 180px; border: 2px solid #4caf50; border-radius: 6px; overflow: hidden; background: #f5f5f5; position: relative;">' +
-                                '<div id="crop-preview" style="width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;"></div>' +
-                            '</div>' +
-                        '</div>' +
-                        '</div>');
-                    
-                    $('#id_background').closest('.field-background').after($preview);
-                    
-                    setTimeout(function() { 
-                        initJcrop($('#crop-target')); 
-                    }, 500);
+                    createExistingImagePreview(imageUrl);
+                } else {
+                    console.log('❌ No existing image found');
                 }
             }
             
-            // Check for existing image after page load
-            setTimeout(checkExistingImage, 1000);
+            function createExistingImagePreview(imageUrl) {
+                // Remove any existing preview
+                $('#image-preview').remove();
+                
+                console.log('🎨 Creating existing image preview for:', imageUrl);
+                
+                var $preview = $('<div id="image-preview" style="margin: 15px 0; padding: 20px; background: #f0f8f0; border: 2px solid #4caf50; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">' +
+                    '<h4 style="margin: 0 0 15px 0; color: #2e7d32; font-size: 16px; font-weight: 600;">🎬 Current Hero Slide - Adjust Crop (16:9)</h4>' +
+                    '<p style="margin: 0 0 15px 0; color: #666; font-size: 13px;">Kéo để điều chỉnh vùng hiển thị. Tỉ lệ cố định 16:9 để phù hợp với slider.</p>' +
+                    '<div id="image-container" style="position: relative; display: inline-block; background: #000; border-radius: 8px; overflow: hidden;">' +
+                        '<img id="crop-target" src="' + imageUrl + '" style="max-width: 800px; max-height: 500px; height: auto; display: block;" crossorigin="anonymous">' +
+                    '</div>' +
+                    '<div id="crop-coords" style="margin-top: 15px; padding: 12px; background: #e8f5e9; border: 1px solid #4caf50; border-radius: 6px; font-family: Consolas, monospace; font-size: 11px; color: #1b5e20;">Đang khởi tạo crop tool...</div>' +
+                    '<div id="crop-preview-container" style="margin-top: 15px; display: none;">' +
+                        '<h5 style="margin: 0 0 10px 0; color: #2e7d32; font-size: 14px;">📱 Preview Crop (16:9)</h5>' +
+                        '<div style="width: 320px; height: 180px; border: 2px solid #4caf50; border-radius: 6px; overflow: hidden; background: #f5f5f5; position: relative;">' +
+                            '<div id="crop-preview" style="width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '</div>');
+                
+                $('#id_background').closest('.field-background').after($preview);
+                
+                // Wait for preview to be inserted into DOM
+                setTimeout(function() {
+                    var $img = $('#crop-target');
+                    console.log('🎯 Initializing Jcrop for existing image...');
+                    
+                    // Ensure image loads properly
+                    if ($img[0].complete) {
+                        console.log('✅ Image already loaded, starting Jcrop immediately');
+                        initJcrop($img);
+                    } else {
+                        console.log('⏳ Waiting for image to load...');
+                        $img.on('load', function() {
+                            console.log('✅ Image loaded, starting Jcrop');
+                            setTimeout(function() {
+                                initJcrop($img);
+                            }, 100);
+                        });
+                        
+                        $img.on('error', function() {
+                            console.error('❌ Failed to load existing image');
+                            $('#crop-coords').html('<span style="color: #d32f2f;">❌ Không thể tải ảnh hiện tại. Vui lòng upload ảnh mới.</span>');
+                        });
+                    }
+                }, 200);
+            }
             
-            // Also check when page changes
-            $(document).on('DOMSubtreeModified', function() {
-                if (!$('#image-preview').length) {
-                    setTimeout(checkExistingImage, 500);
-                }
+            // Check for existing image immediately
+            setTimeout(function() {
+                console.log('🚀 Initial check for existing image...');
+                checkExistingImage();
+            }, 500);
+            
+            // Also check when DOM changes
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        // Check if new file upload elements were added
+                        for (var i = 0; i < mutation.addedNodes.length; i++) {
+                            var node = mutation.addedNodes[i];
+                            if (node.nodeType === 1) { // Element node
+                                var $node = $(node);
+                                if ($node.find('.file-upload').length || $node.hasClass('file-upload')) {
+                                    console.log('🔄 File upload area updated, re-checking existing image...');
+                                    setTimeout(checkExistingImage, 300);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+            
+            // Observe changes to the form
+            observer.observe(document.querySelector('.form-row') || document.body, {
+                childList: true,
+                subtree: true
             });
         }
     });
@@ -456,8 +577,17 @@
     }
     
     #crop-coords:hover {
-        background: #bbdefb !important;
-        border-color: #1976d2 !important;
+        background: #c8e6c9 !important;
+        border-color: #388e3c !important;
+    }
+    
+    /* Fix for existing image conflicts */
+    .field-background .file-upload {
+        margin-bottom: 10px;
+    }
+    
+    .field-background .form-row {
+        margin-bottom: 0;
     }
     </style>
 {% endblock %}
