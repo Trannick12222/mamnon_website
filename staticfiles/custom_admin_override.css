@@ -1,0 +1,20 @@
+:root[data-theme="dark"] {
+  color-scheme: light !important;
+  --dca-light-mode: 1 !important;
+  --dca-dark-mode: 0 !important;
+  --dca-white: #fff !important;
+  --dca-black: #222 !important;
+  --dca-primary: #006fff !important;
+  --dca-gray: #222 !important;
+  --dca-gray-lightest: #f3f3f3 !important;
+  --dca-gray-lighter: #e5e5e5 !important;
+  --dca-gray-light: #ccc !important;
+  --dca-gray-darker: #888 !important;
+  --dca-gray-darkest: #333 !important;
+  --dca-gray-super-lightest: #f8f8f8 !important;
+}
+
+html[data-theme="dark"], body[data-theme="dark"] {
+  background: #fff !important;
+  color: #222 !important;
+}

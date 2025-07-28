@@ -3,686 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sunny Kids - Mầm Non Song Ngữ Quốc Tế</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
-            padding: 1rem 0;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-        }
-
-        .logo::before {
-            content: "🌟";
-            margin-right: 10px;
-            font-size: 2.5rem;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-        }
-
-        .nav-menu a:hover {
-            background: rgba(255,255,255,0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, #FFE066, #FF6B9D, #4ECDC4);
-            padding: 150px 0 100px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.3"/><circle cx="80" cy="30" r="1.5" fill="white" opacity="0.4"/><circle cx="60" cy="70" r="1" fill="white" opacity="0.3"/><circle cx="30" cy="80" r="1.5" fill="white" opacity="0.4"/></svg>');
-        }
-
-        .hero-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            color: white;
-            margin-bottom: 1rem;
-            font-weight: 700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            color: white;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: white;
-            color: #FF6B9D;
-            padding: 15px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-        }
-
-        /* Features Section */
-        .features {
-            padding: 100px 0;
-            background: #f8f9ff;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
-            border-radius: 2px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 3rem;
-            margin-top: 4rem;
-        }
-
-        .feature-card {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .feature-icon {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 1rem;
-        }
-
-        .feature-card p {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        /* Programs Section */
-        .programs {
-            padding: 100px 0;
-            background: white;
-        }
-
-        .programs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-
-        .program-card {
-            background: linear-gradient(135deg, #FFE066, #FF6B9D);
-            border-radius: 20px;
-            padding: 2rem;
-            color: white;
-            text-align: center;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .program-card::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transition: all 0.3s ease;
-            transform: scale(0);
-        }
-
-        .program-card:hover::before {
-            transform: scale(1);
-        }
-
-        .program-card:hover {
-            transform: scale(1.05);
-        }
-
-        .program-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .program-card p {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* About Section */
-        .about {
-            padding: 100px 0;
-            background: linear-gradient(135deg, #f8f9ff, #e8f4fd);
-        }
-
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .about-text h2 {
-            font-size: 2.5rem;
-            color: #333;
-            margin-bottom: 2rem;
-        }
-
-        .about-text p {
-            color: #666;
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-        }
-
-        .about-features {
-            list-style: none;
-            margin-top: 2rem;
-        }
-
-        .about-features li {
-            padding: 0.5rem 0;
-            color: #333;
-            position: relative;
-            padding-left: 30px;
-        }
-
-        .about-features li::before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #4ECDC4;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-
-        .about-image {
-            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
-            border-radius: 20px;
-            height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 8rem;
-            color: white;
-        }
-
-        /* Contact Section */
-        .contact {
-            padding: 100px 0;
-            background: #333;
-            color: white;
-        }
-
-        .contact-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-        }
-
-        .contact-info h2 {
-            font-size: 2.5rem;
-            margin-bottom: 2rem;
-            color: #4ECDC4;
-        }
-
-        .contact-item {
-            margin-bottom: 1.5rem;
-        }
-
-        .contact-item h4 {
-            color: #FF6B9D;
-            margin-bottom: 0.5rem;
-        }
-
-        .contact-form {
-            background: rgba(255,255,255,0.1);
-            padding: 2rem;
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #4ECDC4;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.9);
-            color: #333;
-        }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #FF6B9D, #4ECDC4);
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-
-        /* Footer */
-        .footer {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .about-content,
-            .contact-content {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-            }
-
-            .features-grid,
-            .programs-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-container {
-                padding: 0 1rem;
-            }
-
-            .container {
-                padding: 0 1rem;
-            }
-        }
-
-        /* Animations */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-    </style>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}Sunny Kids - Mầm Non Song Ngữ Quốc Tế{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Trường mầm non song ngữ quốc tế hàng đầu với chương trình STEAM và Montessori tại TP.HCM{% endblock %}">
+    <meta name="keywords" content="mầm non, song ngữ, quốc tế, STEAM, Montessori, TP.HCM, giáo dục, trẻ em">
+    <meta name="author" content="Sunny Kids">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="{% block og_title %}Sunny Kids - Mầm Non Song Ngữ Quốc Tế{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Nơi ươm mầm những ước mơ, phát triển tài năng và xây dựng tương lai tươi sáng cho các bé{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ MEDIA_URL }}images/og-image.jpg{% endblock %}">
+    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Sunny Kids">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Sunny Kids - Mầm Non Song Ngữ Quốc Tế{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Nơi ươm mầm những ước mơ, phát triển tài năng và xây dựng tương lai tươi sáng cho các bé{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ MEDIA_URL }}images/twitter-card.jpg{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% load static %}{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% load static %}{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% load static %}{% static 'images/favicon-16x16.png' %}">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- CSS Files -->
+    {% load static %}
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Sunny Kids",
+        "description": "Mầm non song ngữ quốc tế hàng đầu tại TP.HCM",
+        "url": "{{ request.build_absolute_uri }}",
+        "logo": "{{ MEDIA_URL }}images/logo.png",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "123 Đường ABC",
+            "addressLocality": "Quận 1",
+            "addressRegion": "TP.HCM",
+            "addressCountry": "VN"
+        },
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+84-28-1234-5678",
+            "contactType": "customer service",
+            "email": "info@sunnykids.edu.vn"
+        },
+        "openingHours": "Mo-Fr 07:00-18:00",
+        "priceRange": "$$"
+    }
+    </script>
+    
+    <!-- Analytics (thêm Google Analytics nếu cần) -->
+    {% block analytics %}{% endblock %}
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav-container">
-            <a href="#" class="logo">Sunny Kids</a>
-            <ul class="nav-menu">
-                <li><a href="#home">Trang chủ</a></li>
-                <li><a href="#programs">Chương trình</a></li>
-                <li><a href="#about">Giới thiệu</a></li>
-                <li><a href="#contact">Liên hệ</a></li>
-            </ul>
-        </nav>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1 class="floating">Mầm Non Song Ngữ Quốc Tế</h1>
-            <p>Nơi ươm mầm những ước mơ, phát triển tài năng và xây dựng tương lai tươi sáng cho các bé</p>
-            <a href="#contact" class="cta-button">Đăng ký tham quan</a>
-        </div>
-    </section>
+<body class="font-body text-gray-900 bg-gray-50 antialiased">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-sunny-pink-500 text-white px-4 py-2 rounded-md z-50">
+        Chuyển đến nội dung chính
+    </a>
 
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="container">
-            <h2 class="section-title">Tại sao chọn Sunny Kids?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🌍</div>
-                    <h3>Chương trình quốc tế</h3>
-                    <p>Áp dụng phương pháp giáo dục STEAM và Montessori, giúp trẻ phát triển toàn diện các kỹ năng thế kỷ 21</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">👨‍🏫</div>
-                    <h3>Giáo viên bản ngữ</h3>
-                    <p>Đội ngũ giáo viên nước ngoài có kinh nghiệm và giáo viên Việt Nam được đào tạo chuyên nghiệp</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🏆</div>
-                    <h3>Chứng nhận quốc tế</h3>
-                    <p>Học sinh được đăng ký với hệ thống giáo dục Canada và nhận chứng nhận quốc tế</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎨</div>
-                    <h3>Môi trường sáng tạo</h3>
-                    <p>Không gian học tập hiện đại, an toàn, khuyến khích trẻ khám phá và phát triển sự sáng tạo</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🥗</div>
-                    <h3>Dinh dưỡng khoa học</h3>
-                    <p>Thực đơn được thiết kế bởi chuyên gia dinh dưỡng, đảm bảo an toàn và phù hợp với từng độ tuổi</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">❤️</div>
-                    <h3>Chăm sóc tận tình</h3>
-                    <p>Tỷ lệ giáo viên/học sinh hợp lý, đảm bảo mỗi bé được chăm sóc và quan tâm đặc biệt</p>
-                </div>
+    <!-- Main Content Area -->
+    <main id="main-content" class="min-h-screen">
+        {% block content %}
+        <!-- Default content if no content block is provided -->
+        <div class="min-h-screen flex items-center justify-center bg-sunny-gradient">
+            <div class="text-center text-white">
+                <h1 class="text-6xl font-bold mb-4 animate-float">🌟</h1>
+                <h2 class="text-4xl font-bold mb-2">Sunny Kids</h2>
+                <p class="text-xl">Mầm Non Song Ngữ Quốc Tế</p>
             </div>
         </div>
-    </section>
+        {% endblock %}
+    </main>
 
-    <!-- Programs Section -->
-    <section class="programs" id="programs">
-        <div class="container">
-            <h2 class="section-title">Chương trình học</h2>
-            <div class="programs-grid">
-                <div class="program-card">
-                    <h3>🌏 Khám phá thế giới</h3>
-                    <p>Trẻ sẽ được "du lịch" khắp các châu lục, tìm hiểu về văn hóa, địa lý và động vật qua các hoạt động thú vị</p>
-                </div>
-                <div class="program-card">
-                    <h3>🔬 STEAM Education</h3>
-                    <p>Phát triển tư duy khoa học, công nghệ, kỹ thuật, nghệ thuật và toán học thông qua thực hành</p>
-                </div>
-                <div class="program-card">
-                    <h3>🎭 Montessori</h3>
-                    <p>Phương pháp giáo dục tôn trọng nhịp độ phát triển tự nhiên của trẻ, khuyến khích tự học và khám phá</p>
-                </div>
-                <div class="program-card">
-                    <h3>🗣️ Song ngữ</h3>
-                    <p>Môi trường ngôn ngữ Anh - Việt tự nhiên, giúp trẻ phát triển khả năng giao tiếp đa ngôn ngữ</p>
-                </div>
-                <div class="program-card">
-                    <h3>🎪 Hoạt động ngoại khóa</h3>
-                    <p>Yoga, múa, thể thao, âm nhạc và nhiều hoạt động phong phú phát triển thể chất và tinh thần</p>
-                </div>
-                <div class="program-card">
-                    <h3>📚 Thư viện số</h3>
-                    <p>Hệ thống học liệu hiện đại với Reading Eggs và thế giới sách tranh song ngữ phong phú</p>
-                </div>
-            </div>
+    <!-- Back to top button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-sunny-pink-500 hover:bg-sunny-pink-600 text-white p-3 rounded-full shadow-sunny transition-all duration-300 opacity-0 invisible z-40">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
+
+    <!-- Loading overlay (optional) -->
+    <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex items-center justify-center opacity-0 invisible transition-all duration-500">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-4 border-sunny-pink-500 border-t-transparent mb-4"></div>
+            <p class="text-gray-600">Đang tải...</p>
         </div>
-    </section>
+    </div>
 
-    <!-- About Section -->
-    <section class="about" id="about">
-        <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>Về Sunny Kids</h2>
-                    <p>Sunny Kids là ngôi trường mầm non song ngữ quốc tế được thành lập với tâm huyết của những người làm giáo dục, mong muốn mang đến cho trẻ em Việt Nam những chương trình học tiên tiến nhất thế giới.</p>
-                    <p>Chúng tôi tạo ra một môi trường giáo dục đầy yêu thương và chuyên nghiệp, nơi mỗi đứa trẻ được tôn trọng, khuyến khích phát triển theo cách riêng của mình.</p>
-                    <ul class="about-features">
-                        <li>Cơ sở vật chất hiện đại, an toàn theo tiêu chuẩn quốc tế</li>
-                        <li>Đội ngũ giáo viên được đào tạo bài bản và có tâm huyết</li>
-                        <li>Chương trình giáo dục được thiết kế khoa học và sáng tạo</li>
-                        <li>Môi trường đa văn hóa, khuyến khích sự khác biệt</li>
-                        <li>Hợp tác với các tổ chức giáo dục uy tín quốc tế</li>
-                    </ul>
-                </div>
-                <div class="about-image">
-                    🏫
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h2>Liên hệ với chúng tôi</h2>
-                    <div class="contact-item">
-                        <h4>📍 Địa chỉ</h4>
-                        <p>123 Đường ABC, Quận 1, TP.HCM</p>
-                    </div>
-                    <div class="contact-item">
-                        <h4>📞 Hotline</h4>
-                        <p>028 1234 5678</p>
-                    </div>
-                    <div class="contact-item">
-                        <h4>✉️ Email</h4>
-                        <p>info@sunnykids.edu.vn</p>
-                    </div>
-                    <div class="contact-item">
-                        <h4>🕒 Giờ mở cửa</h4>
-                        <p>Thứ 2 - Thứ 6: 7:00 - 17:30<br>
-                           Thứ 7: 8:00 - 11:30</p>
-                    </div>
-                </div>
-                <div class="contact-form">
-                    <h3>Đăng ký tham quan</h3>
-                    <div class="form-group">
-                        <label>Họ tên phụ huynh *</label>
-                        <input type="text" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Số điện thoại *</label>
-                        <input type="tel" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email">
-                    </div>
-                    <div class="form-group">
-                        <label>Tuổi của bé</label>
-                        <input type="number" min="1" max="6">
-                    </div>
-                    <div class="form-group">
-                        <label>Ghi chú</label>
-                        <textarea rows="4"></textarea>
-                    </div>
-                    <button class="submit-btn">Gửi đăng ký</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2025 Sunny Kids - Mầm Non Song Ngữ Quốc Tế. All rights reserved.</p>
-        </div>
-    </footer>
-
+    <!-- JavaScript -->
     <script>
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        // Back to top functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const backToTop = document.getElementById('back-to-top');
+            
+            // Show/hide back to top button
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTop.classList.remove('opacity-0', 'invisible');
+                    backToTop.classList.add('opacity-100', 'visible');
+                } else {
+                    backToTop.classList.add('opacity-0', 'invisible');
+                    backToTop.classList.remove('opacity-100', 'visible');
                 }
             });
-        });
-
-        // Form submission
-        document.querySelector('.submit-btn').addEventListener('click', function(e) {
-            e.preventDefault();
             
-            const name = document.querySelector('input[type="text"]').value;
-            const phone = document.querySelector('input[type="tel"]').value;
-            
-            if (!name || !phone) {
-                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
-                return;
-            }
-            
-            alert('Cảm ơn bạn đã đăng ký! Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất.');
-            
-            // Reset form
-            document.querySelectorAll('input, textarea').forEach(field => {
-                field.value = '';
-            });
-        });
-
-        // Header scroll effect
-        window.addEventListener('scroll', function() {
-            const header = document.querySelector('.header');
-            if (window.scrollY > 100) {
-                header.style.background = 'rgba(255, 107, 157, 0.95)';
-                header.style.backdropFilter = 'blur(10px)';
-            } else {
-                header.style.background = 'linear-gradient(135deg, #FF6B9D, #4ECDC4)';
-                header.style.backdropFilter = 'none';
-            }
-        });
-
-        // Card hover effects
-        document.querySelectorAll('.feature-card, .program-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = this.classList.contains('program-card') ? 'scale(1.05)' : 'translateY(-10px)';
+            // Scroll to top when clicked
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             });
             
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = this.classList.contains('program-card') ? 'scale(1)' : 'translateY(0)';
+            // Loading overlay management
+            const loadingOverlay = document.getElementById('loading-overlay');
+            
+            // Hide loading overlay when page is fully loaded
+            window.addEventListener('load', function() {
+                loadingOverlay.classList.add('opacity-0', 'invisible');
+            });
+            
+            // Show loading overlay for page navigation
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (link && link.href && !link.href.startsWith('#') && !link.target) {
+                    loadingOverlay.classList.remove('opacity-0', 'invisible');
+                    loadingOverlay.classList.add('opacity-100', 'visible');
+                }
+            });
+            
+            // Accessibility improvements
+            // Add focus indicators for keyboard navigation
+            const focusableElements = document.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
+            
+            focusableElements.forEach(element => {
+                element.addEventListener('focus', function() {
+                    this.classList.add('ring-2', 'ring-sunny-pink-500', 'ring-offset-2');
+                });
+                
+                element.addEventListener('blur', function() {
+                    this.classList.remove('ring-2', 'ring-sunny-pink-500', 'ring-offset-2');
+                });
+            });
+            
+            // Announce page changes to screen readers
+            const announcer = document.createElement('div');
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
+            announcer.className = 'sr-only';
+            document.body.appendChild(announcer);
+            
+            // Performance monitoring
+            if ('performance' in window) {
+                window.addEventListener('load', function() {
+                    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                    console.log('Page load time:', loadTime + 'ms');
+                    
+                    // Send to analytics if needed
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'timing_complete', {
+                            name: 'load',
+                            value: loadTime
+                        });
+                    }
+                });
+            }
+            
+            // Service Worker registration for PWA (optional)
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                    navigator.serviceWorker.register('/sw.js')
+                        .then(function(registration) {
+                            console.log('ServiceWorker registration successful');
+                        })
+                        .catch(function(err) {
+                            console.log('ServiceWorker registration failed');
+                        });
+                });
+            }
+        });
+        
+        // Global error handling
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            // Send to error tracking service if needed
+        });
+        
+        // Unhandled promise rejection handling
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            // Send to error tracking service if needed
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Django Messages Framework -->
+    {% if messages %}
+    <div class="fixed top-20 right-4 z-50 space-y-2">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} bg-white border-l-4 {% if message.tags == 'error' %}border-red-500 text-red-700{% elif message.tags == 'warning' %}border-yellow-500 text-yellow-700{% elif message.tags == 'success' %}border-green-500 text-green-700{% else %}border-blue-500 text-blue-700{% endif %} p-4 rounded-r-lg shadow-lg max-w-sm">
+            <div class="flex items-center">
+                <div class="flex-shrink-0">
+                    {% if message.tags == 'error' %}
+                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                        </svg>
+                    {% elif message.tags == 'warning' %}
+                        <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    {% elif message.tags == 'success' %}
+                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    {% else %}
+                        <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                        </svg>
+                    {% endif %}
+                </div>
+                <div class="ml-3 flex-1">
+                    <p class="text-sm font-medium">{{ message }}</p>
+                </div>
+                <div class="ml-4 flex-shrink-0">
+                    <button type="button" class="inline-flex text-gray-400 hover:text-gray-600 focus:outline-none" onclick="this.parentElement.parentElement.parentElement.remove()">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <script>
+        // Auto-hide messages after 5 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateX(100%)';
+                    setTimeout(function() {
+                        alert.remove();
+                    }, 300);
+                }, 5000);
             });
         });
     </script>
+    {% endif %}
 </body>
 </html>

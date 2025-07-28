@@ -27,14 +27,51 @@ $black: var(--dca-black);
 }
 
 :root, :root[data-theme="auto"] {
-    color-scheme: light;
+    color-scheme: dark light;
 }
 
 :root[data-theme="light"] {
     color-scheme: light;
 }
 
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --dca-light-mode: 0;
+    --dca-dark-mode: 1;
+    --dca-white: #2A2C2E;
+    --dca-black: #FFF;
+    --dca-primary: #58D1FC;
+    --dca-gray: #ccc;
+    --dca-gray-lightest: #444;
+    --dca-gray-lighter: #666;
+    --dca-gray-light: #888;
+    --dca-gray-darker: #ddd;
+    --dca-gray-darkest: #eee;
+    --dca-gray-super-lightest: #333;
 
+    --active-brightness: 2;
+    --focus-brightness: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]), :root[data-theme="auto"] {
+        --dca-light-mode: 0;
+        --dca-dark-mode: 1;
+        --dca-white: #2A2C2E;
+        --dca-black: #FFF;
+        --dca-primary: #58D1FC;
+        --dca-gray: #ccc;
+        --dca-gray-lightest: #444;
+        --dca-gray-lighter: #666;
+        --dca-gray-light: #888;
+        --dca-gray-darker: #ddd;
+        --dca-gray-darkest: #eee;
+        --dca-gray-super-lightest: #333;
+
+        --active-brightness: 2;
+        --focus-brightness: 1.5;
+    }
+}
 
 
 $color-primary: var(--dca-primary);
