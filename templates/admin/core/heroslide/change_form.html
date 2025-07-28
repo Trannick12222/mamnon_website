@@ -547,6 +547,38 @@
         display: none !important;
     }
     
+    /* Hide the default CROPPING section */
+    .field-cropping,
+    .form-row.field-cropping,
+    div:has(> label[for="id_cropping"]),
+    label[for="id_cropping"],
+    .field-cropping_box {
+        display: none !important;
+    }
+    
+    /* Hide any cropping-related widgets that appear below our custom tool */
+    .form-row:has(.image-cropping),
+    .form-row:has(.cropping),
+    .image-cropping,
+    .cropping {
+        display: none !important;
+    }
+    
+    /* More aggressive hiding for django-image-cropping default widgets */
+    .form-row:contains("CROPPING"),
+    .form-row h2:contains("CROPPING"),
+    .form-row h3:contains("CROPPING"),
+    .module h2:contains("CROPPING"),
+    fieldset:has(h2:contains("CROPPING")),
+    div.module:has(h2:contains("CROPPING")) {
+        display: none !important;
+    }
+    
+    /* Hide inline cropping widgets */
+    .inline-group .form-row:has(.image-cropping) {
+        display: none !important;
+    }
+    
     /* Ensure preview container looks good */
     #crop-preview-container {
         animation: fadeIn 0.3s ease-in-out;
