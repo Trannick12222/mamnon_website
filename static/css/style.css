@@ -2786,7 +2786,58 @@ img {
 .animation-delay-150 { animation-delay: 150ms; }
 .animation-delay-300 { animation-delay: 300ms; }
 .animation-delay-500 { animation-delay: 500ms; }
+/* Dark mode form input styling */
+.form-input-dark {
+  background-color: rgba(31, 41, 55, 0.8) !important; /* Dark background */
+  border-color: rgba(75, 85, 99, 0.6) !important; 
+  color: #ffffff !important; /* Text trắng trong select box */
+  backdrop-filter: blur(10px);
+}
 
+.form-input-dark::placeholder {
+  color: rgba(156, 163, 175, 0.8) !important;
+}
+
+.form-input-dark:focus {
+  border-color: #ec4899 !important;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1) !important;
+  background-color: rgba(31, 41, 55, 0.9) !important;
+  color: #ffffff !important;
+}
+
+/* CRITICAL: Fix cho dropdown select options */
+.form-input-dark option {
+  background-color: #ffffff !important; /* Background trắng */
+  color: #1f2937 !important; /* Text màu tối để tương phản với background trắng */
+  padding: 8px 12px !important;
+}
+
+.form-input-dark option:checked {
+  background-color: #3b82f6 !important; /* Background xanh khi được chọn */
+  color: #ffffff !important; /* Text trắng khi được chọn */
+}
+
+.form-input-dark option:hover {
+  background-color: #3b82f6 !important; /* Background xanh khi hover */
+  color: #ffffff !important; /* Text trắng khi hover */
+}
+
+/* Fix cho Safari và Chrome */
+.form-input-dark {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+/* Đảm bảo text hiển thị trong tất cả browser */
+select.form-input-dark {
+  color: #ffffff !important;
+}
+
+select.form-input-dark option {
+  background: #1f2937 !important;
+  color: #ffffff !important;
+}
 /* Fade in animation */
 .fade-in {
   opacity: 0;
