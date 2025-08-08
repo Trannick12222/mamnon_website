@@ -3,272 +3,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     
     <!-- SEO Meta Tags -->
-    <title>{% block title %}Sunny Kids - Mầm Non Song Ngữ Quốc Tế{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Trường mầm non song ngữ quốc tế hàng đầu với chương trình STEAM và Montessori tại TP.HCM{% endblock %}">
-    <meta name="keywords" content="mầm non, song ngữ, quốc tế, STEAM, Montessori, TP.HCM, giáo dục, trẻ em">
-    <meta name="author" content="Sunny Kids">
+    {% set seo_data = get_seo_settings(request.endpoint or 'home') %}
+    <title>{{ seo_data.meta_title or (block('title') + ' - Trường Mầm non Hoa Hướng Dương') }}</title>
     
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="{% block og_title %}Sunny Kids - Mầm Non Song Ngữ Quốc Tế{% endblock %}">
-    <meta property="og:description" content="{% block og_description %}Nơi ươm mầm những ước mơ, phát triển tài năng và xây dựng tương lai tươi sáng cho các bé{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}{{ MEDIA_URL }}images/og-image.jpg{% endblock %}">
-    <meta property="og:url" content="{% block og_url %}{{ request.build_absolute_uri }}{% endblock %}">
+    {% if seo_data.meta_description %}
+    <meta name="description" content="{{ seo_data.meta_description }}">
+    {% endif %}
+    
+    {% if seo_data.meta_keywords %}
+    <meta name="keywords" content="{{ seo_data.meta_keywords }}">
+    {% endif %}
+    
+    {% if seo_data.robots_meta %}
+    <meta name="robots" content="{{ seo_data.robots_meta }}">
+    {% endif %}
+    
+    {% if seo_data.canonical_url %}
+    <link rel="canonical" href="{{ seo_data.canonical_url }}">
+    {% endif %}
+    
+    <!-- Open Graph Meta Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Sunny Kids">
+    <meta property="og:title" content="{{ seo_data.og_title or seo_data.meta_title or 'Trường Mầm non Hoa Hướng Dương' }}">
+    <meta property="og:description" content="{{ seo_data.og_description or seo_data.meta_description or 'Trường Mầm non Hoa Hướng Dương - Nuôi dưỡng tâm hồn, phát triển tài năng' }}">
+    <meta property="og:image" content="{{ request.url_root.rstrip('/') }}{{ seo_data.og_image or '/static/images/mnhhd.jpg' }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:site_name" content="Trường Mầm non Hoa Hướng Dương">
     
-    <!-- Twitter Card Tags -->
+    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{% block twitter_title %}Sunny Kids - Mầm Non Song Ngữ Quốc Tế{% endblock %}">
-    <meta name="twitter:description" content="{% block twitter_description %}Nơi ươm mầm những ước mơ, phát triển tài năng và xây dựng tương lai tươi sáng cho các bé{% endblock %}">
-    <meta name="twitter:image" content="{% block twitter_image %}{{ MEDIA_URL }}images/twitter-card.jpg{% endblock %}">
+    <meta name="twitter:title" content="{{ seo_data.og_title or seo_data.meta_title or 'Trường Mầm non Hoa Hướng Dương' }}">
+    <meta name="twitter:description" content="{{ seo_data.og_description or seo_data.meta_description or 'Trường Mầm non Hoa Hướng Dương - Nuôi dưỡng tâm hồn, phát triển tài năng' }}">
+    <meta name="twitter:image" content="{{ request.url_root.rstrip('/') }}{{ seo_data.og_image or '/static/images/mnhhd.jpg' }}">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'images/favicon.ico' %}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{% load static %}{% static 'images/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% load static %}{% static 'images/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% load static %}{% static 'images/favicon-16x16.png' %}">
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='images/mnhhd.jpg') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/mnhhd.jpg') }}">
     
-    <!-- Preconnect for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Patrick+Hand:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
-    <!-- CSS Files -->
-    {% load static %}
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    {% block extra_css %}{% endblock %}
+    <style>
+        .font-patrick { font-family: 'Patrick Hand', cursive; }
+        .font-quicksand { font-family: 'Quicksand', sans-serif; }
+        .bg-primary { background-color: #ff6b35; }
+        .bg-secondary { background-color: #f7931e; }
+        .text-primary { color: #ff6b35; }
+        .text-secondary { color: #f7931e; }
+        .bg-blue-light { background-color: #e3f2fd; }
+        .text-blue-dark { color: #1565c0; }
+        
+        .hero-slider {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-slider::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="stars" patternUnits="userSpaceOnUse" width="10" height="10"><circle cx="5" cy="5" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23stars)"/></svg>');
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.4);
+        }
+        
+        .navbar-sticky {
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-sticky.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+    </style>
     
-    <!-- Schema.org structured data -->
+    <!-- Schema Markup -->
+    {% if seo_data.schema_markup %}
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "Sunny Kids",
-        "description": "Mầm non song ngữ quốc tế hàng đầu tại TP.HCM",
-        "url": "{{ request.build_absolute_uri }}",
-        "logo": "{{ MEDIA_URL }}images/logo.png",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "123 Đường ABC",
-            "addressLocality": "Quận 1",
-            "addressRegion": "TP.HCM",
-            "addressCountry": "VN"
-        },
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+84-28-1234-5678",
-            "contactType": "customer service",
-            "email": "info@sunnykids.edu.vn"
-        },
-        "openingHours": "Mo-Fr 07:00-18:00",
-        "priceRange": "$$"
-    }
+    {{ seo_data.schema_markup|safe }}
     </script>
+    {% endif %}
     
-    <!-- Analytics (thêm Google Analytics nếu cần) -->
-    {% block analytics %}{% endblock %}
+    {% block extra_css %}{% endblock %}
 </head>
-
-<body class="font-body text-gray-900 bg-gray-50 antialiased">
-    <!-- Skip to main content for accessibility -->
-    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-sunny-pink-500 text-white px-4 py-2 rounded-md z-50">
-        Chuyển đến nội dung chính
-    </a>
-
-    <!-- Main Content Area -->
-    <main id="main-content" class="min-h-screen">
-        {% block content %}
-        <!-- Default content if no content block is provided -->
-        <div class="min-h-screen flex items-center justify-center bg-sunny-gradient">
-            <div class="text-center text-white">
-                <h1 class="text-6xl font-bold mb-4 animate-float">🌟</h1>
-                <h2 class="text-4xl font-bold mb-2">Sunny Kids</h2>
-                <p class="text-xl">Mầm Non Song Ngữ Quốc Tế</p>
+<body class="font-quicksand">
+    <!-- Header -->
+    <header class="navbar-sticky fixed w-full z-50 bg-white shadow-lg">
+        <!-- Top Bar -->
+        <div class="bg-blue-light py-2 hidden md:block">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center text-sm text-blue-dark">
+                    <div class="flex items-center space-x-4">
+                        {% set phone_found = false %}
+                        {% set email_found = false %}
+                        {% for setting in global_contact_settings %}
+                            {% if setting.setting_type == 'phone' and not phone_found %}
+                                <span><i class="fas fa-phone mr-2"></i>{{ setting.setting_value }}</span>
+                                {% set phone_found = true %}
+                            {% elif setting.setting_type == 'email' and not email_found %}
+                                <span><i class="fas fa-envelope mr-2"></i>{{ setting.setting_value }}</span>
+                                {% set email_found = true %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <!-- Fallback if no phone/email configured -->
+                        {% if not phone_found %}
+                        <span><i class="fas fa-phone mr-2"></i>028-3823-4567</span>
+                        {% endif %}
+                        {% if not email_found %}
+                        <span><i class="fas fa-envelope mr-2"></i>info@hoahuongduong.edu.vn</span>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        {% for setting in global_contact_settings %}
+                            {% if setting.setting_type == 'url' %}
+                                <a href="{{ setting.setting_value }}" target="_blank" class="hover:text-primary" title="{{ setting.display_name }}">
+                                    <i class="
+                                        {% if 'facebook' in setting.setting_key.lower() %}fab fa-facebook
+                                        {% elif 'youtube' in setting.setting_key.lower() %}fab fa-youtube
+                                        {% elif 'instagram' in setting.setting_key.lower() %}fab fa-instagram
+                                        {% elif 'zalo' in setting.setting_key.lower() %}fas fa-comment
+                                        {% elif 'tiktok' in setting.setting_key.lower() %}fab fa-tiktok
+                                        {% elif 'twitter' in setting.setting_key.lower() %}fab fa-twitter
+                                        {% else %}fas fa-link
+                                        {% endif %}"></i>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <!-- Fallback if no social links configured -->
+                        {% if not global_contact_settings or not global_contact_settings|selectattr('setting_type', 'equalto', 'url')|list %}
+                        <a href="#" class="hover:text-primary"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="hover:text-primary"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="hover:text-primary"><i class="fab fa-instagram"></i></a>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-        {% endblock %}
+        
+        <!-- Main Navigation -->
+        <nav class="bg-white py-4">
+            <div class="container mx-auto px-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <img src="{{ url_for('static', filename='images/mnhhd.jpg') }}" alt="Hoa Hướng Dương" class="h-12 mr-3 rounded-lg shadow-sm">
+                        <div>
+                            <h1 class="text-xl font-bold text-primary font-patrick">Hoa Hướng Dương</h1>
+                            <p class="text-sm text-gray-600">Trường Mầm non</p>
+                        </div>
+                    </div>
+                    
+                    <div class="hidden lg:flex items-center space-x-8">
+                        <a href="/" class="text-gray-700 hover:text-primary font-medium transition">Trang chủ</a>
+                        <a href="/gioi-thieu" class="text-gray-700 hover:text-primary font-medium transition">Giới thiệu</a>
+                        <div class="relative group">
+                            <a href="/chuong-trinh" class="text-gray-700 hover:text-primary font-medium transition">Chương trình</a>
+                        </div>
+                        <a href="/tin-tuc" class="text-gray-700 hover:text-primary font-medium transition">Tin tức</a>
+                        <a href="/thu-vien-anh" class="text-gray-700 hover:text-primary font-medium transition">Thư viện ảnh</a>
+                        <a href="/su-kien" class="text-gray-700 hover:text-primary font-medium transition">Sự kiện</a>
+                        <a href="/lien-he" class="text-gray-700 hover:text-primary font-medium transition">Liên hệ</a>
+                    </div>
+                    
+                    <div class="lg:hidden">
+                        <button id="mobile-menu-btn" class="text-gray-700 hover:text-primary">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="lg:hidden hidden bg-white border-t">
+                <div class="container mx-auto px-4 py-4">
+                    <div class="flex flex-col space-y-4">
+                        <a href="/" class="text-gray-700 hover:text-primary font-medium">Trang chủ</a>
+                        <a href="/gioi-thieu" class="text-gray-700 hover:text-primary font-medium">Giới thiệu</a>
+                        <a href="/chuong-trinh" class="text-gray-700 hover:text-primary font-medium">Chương trình</a>
+                        <a href="/tin-tuc" class="text-gray-700 hover:text-primary font-medium">Tin tức</a>
+                        <a href="/thu-vien-anh" class="text-gray-700 hover:text-primary font-medium">Thư viện ảnh</a>
+                        <a href="/su-kien" class="text-gray-700 hover:text-primary font-medium">Sự kiện</a>
+                        <a href="/lien-he" class="text-gray-700 hover:text-primary font-medium">Liên hệ</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container mx-auto px-4 py-4">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }} mb-4 p-4 rounded-lg {{ 'bg-green-100 text-green-800' if category == 'success' else 'bg-red-100 text-red-800' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
     </main>
 
-    <!-- Back to top button -->
-    <button id="back-to-top" class="fixed bottom-8 right-8 bg-sunny-pink-500 hover:bg-sunny-pink-600 text-white p-3 rounded-full shadow-sunny transition-all duration-300 opacity-0 invisible z-40">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
-        </svg>
-    </button>
-
-    <!-- Loading overlay (optional) -->
-    <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex items-center justify-center opacity-0 invisible transition-all duration-500">
-        <div class="text-center">
-            <div class="animate-spin rounded-full h-16 w-16 border-4 border-sunny-pink-500 border-t-transparent mb-4"></div>
-            <p class="text-gray-600">Đang tải...</p>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="{{ url_for('static', filename='images/mnhhd.jpg') }}" alt="Hoa Hướng Dương" class="h-10 mr-3 rounded-lg">
+                        <div>
+                            <h3 class="text-lg font-bold font-patrick">Hoa Hướng Dương</h3>
+                            <p class="text-sm text-gray-400">Trường Mầm non</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Nuôi dưỡng tâm hồn - Phát triển tài năng. Chúng tôi cam kết mang đến cho trẻ em một môi trường giáo dục tốt nhất.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Liên kết nhanh</h4>
+                    <div class="space-y-2">
+                        <a href="/gioi-thieu" class="block text-gray-300 hover:text-primary transition">Giới thiệu</a>
+                        <a href="/chuong-trinh" class="block text-gray-300 hover:text-primary transition">Chương trình</a>
+                        <a href="/tin-tuc" class="block text-gray-300 hover:text-primary transition">Tin tức</a>
+                        <a href="/lien-he" class="block text-gray-300 hover:text-primary transition">Liên hệ</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Thông tin liên hệ</h4>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-primary mr-3 mt-1"></i>
+                            <span class="text-gray-300 text-sm">123 Đường Hoa Hướng Dương, Quận 1, TP.HCM</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-primary mr-3"></i>
+                            <span class="text-gray-300 text-sm">028-3823-4567</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-primary mr-3"></i>
+                            <span class="text-gray-300 text-sm">info@hoahuongduong.edu.vn</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Giờ làm việc</h4>
+                    <div class="space-y-2 text-gray-300 text-sm">
+                        <div>Thứ 2 - Thứ 6: 7:00 - 17:00</div>
+                        <div>Thứ 7: 7:30 - 11:30</div>
+                        <div>Chủ nhật: Nghỉ</div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <h5 class="font-semibold mb-3">Theo dõi chúng tôi</h5>
+                        <div class="flex space-x-3 flex-wrap">
+                            {% for setting in global_contact_settings %}
+                                {% if setting.setting_type == 'url' %}
+                                    <a href="{{ setting.setting_value }}" target="_blank" 
+                                       class="w-8 h-8 rounded-full flex items-center justify-center hover:bg-secondary transition
+                                       {% if 'facebook' in setting.setting_key.lower() %}bg-blue-600 hover:bg-blue-700
+                                       {% elif 'youtube' in setting.setting_key.lower() %}bg-red-600 hover:bg-red-700
+                                       {% elif 'instagram' in setting.setting_key.lower() %}bg-pink-600 hover:bg-pink-700
+                                       {% elif 'zalo' in setting.setting_key.lower() %}bg-blue-500 hover:bg-blue-600
+                                       {% elif 'tiktok' in setting.setting_key.lower() %}bg-black hover:bg-gray-800
+                                       {% elif 'twitter' in setting.setting_key.lower() %}bg-blue-400 hover:bg-blue-500
+                                       {% else %}bg-primary{% endif %}"
+                                       title="{{ setting.display_name }}">
+                                        <i class="text-white text-sm
+                                            {% if 'facebook' in setting.setting_key.lower() %}fab fa-facebook
+                                            {% elif 'youtube' in setting.setting_key.lower() %}fab fa-youtube
+                                            {% elif 'instagram' in setting.setting_key.lower() %}fab fa-instagram
+                                            {% elif 'zalo' in setting.setting_key.lower() %}fas fa-comment
+                                            {% elif 'tiktok' in setting.setting_key.lower() %}fab fa-tiktok
+                                            {% elif 'twitter' in setting.setting_key.lower() %}fab fa-twitter
+                                            {% else %}fas fa-link
+                                            {% endif %}"></i>
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            <!-- Fallback if no social links configured -->
+                            {% if not global_contact_settings or not global_contact_settings|selectattr('setting_type', 'equalto', 'url')|list %}
+                            <a href="#" class="w-8 h-8 bg-primary rounded-full flex items-center justify-center hover:bg-secondary transition">
+                                <i class="fab fa-facebook text-sm"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 bg-primary rounded-full flex items-center justify-center hover:bg-secondary transition">
+                                <i class="fab fa-youtube text-sm"></i>
+                            </a>
+                            <a href="#" class="w-8 h-8 bg-primary rounded-full flex items-center justify-center hover:bg-secondary transition">
+                                <i class="fab fa-instagram text-sm"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+                <p class="text-gray-400 text-sm">
+                    © 2024 Trường Mầm non Hoa Hướng Dương. Tất cả quyền được bảo lưu.
+                </p>
+            </div>
         </div>
-    </div>
+    </footer>
 
     <!-- JavaScript -->
     <script>
-        // Back to top functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const backToTop = document.getElementById('back-to-top');
-            
-            // Show/hide back to top button
-            window.addEventListener('scroll', function() {
-                if (window.scrollY > 300) {
-                    backToTop.classList.remove('opacity-0', 'invisible');
-                    backToTop.classList.add('opacity-100', 'visible');
-                } else {
-                    backToTop.classList.add('opacity-0', 'invisible');
-                    backToTop.classList.remove('opacity-100', 'visible');
-                }
-            });
-            
-            // Scroll to top when clicked
-            backToTop.addEventListener('click', function() {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-            
-            // Loading overlay management
-            const loadingOverlay = document.getElementById('loading-overlay');
-            
-            // Hide loading overlay when page is fully loaded
-            window.addEventListener('load', function() {
-                loadingOverlay.classList.add('opacity-0', 'invisible');
-            });
-            
-            // Show loading overlay for page navigation
-            document.addEventListener('click', function(e) {
-                const link = e.target.closest('a');
-                if (link && link.href && !link.href.startsWith('#') && !link.target) {
-                    loadingOverlay.classList.remove('opacity-0', 'invisible');
-                    loadingOverlay.classList.add('opacity-100', 'visible');
-                }
-            });
-            
-            // Accessibility improvements
-            // Add focus indicators for keyboard navigation
-            const focusableElements = document.querySelectorAll('a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])');
-            
-            focusableElements.forEach(element => {
-                element.addEventListener('focus', function() {
-                    this.classList.add('ring-2', 'ring-sunny-pink-500', 'ring-offset-2');
-                });
-                
-                element.addEventListener('blur', function() {
-                    this.classList.remove('ring-2', 'ring-sunny-pink-500', 'ring-offset-2');
-                });
-            });
-            
-            // Announce page changes to screen readers
-            const announcer = document.createElement('div');
-            announcer.setAttribute('aria-live', 'polite');
-            announcer.setAttribute('aria-atomic', 'true');
-            announcer.className = 'sr-only';
-            document.body.appendChild(announcer);
-            
-            // Performance monitoring
-            if ('performance' in window) {
-                window.addEventListener('load', function() {
-                    const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
-                    console.log('Page load time:', loadTime + 'ms');
-                    
-                    // Send to analytics if needed
-                    if (typeof gtag !== 'undefined') {
-                        gtag('event', 'timing_complete', {
-                            name: 'load',
-                            value: loadTime
-                        });
-                    }
-                });
-            }
-            
-            // Service Worker registration for PWA (optional)
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                    navigator.serviceWorker.register('/sw.js')
-                        .then(function(registration) {
-                            console.log('ServiceWorker registration successful');
-                        })
-                        .catch(function(err) {
-                            console.log('ServiceWorker registration failed');
-                        });
-                });
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-sticky');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
             }
         });
-        
-        // Global error handling
-        window.addEventListener('error', function(e) {
-            console.error('Global error:', e.error);
-            // Send to error tracking service if needed
-        });
-        
-        // Unhandled promise rejection handling
-        window.addEventListener('unhandledrejection', function(e) {
-            console.error('Unhandled promise rejection:', e.reason);
-            // Send to error tracking service if needed
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         });
     </script>
     
     {% block extra_js %}{% endblock %}
-    
-    <!-- Django Messages Framework -->
-    {% if messages %}
-    <div class="fixed top-20 right-4 z-50 space-y-2">
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} bg-white border-l-4 {% if message.tags == 'error' %}border-red-500 text-red-700{% elif message.tags == 'warning' %}border-yellow-500 text-yellow-700{% elif message.tags == 'success' %}border-green-500 text-green-700{% else %}border-blue-500 text-blue-700{% endif %} p-4 rounded-r-lg shadow-lg max-w-sm">
-            <div class="flex items-center">
-                <div class="flex-shrink-0">
-                    {% if message.tags == 'error' %}
-                        <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                        </svg>
-                    {% elif message.tags == 'warning' %}
-                        <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                        </svg>
-                    {% elif message.tags == 'success' %}
-                        <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                    {% else %}
-                        <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
-                        </svg>
-                    {% endif %}
-                </div>
-                <div class="ml-3 flex-1">
-                    <p class="text-sm font-medium">{{ message }}</p>
-                </div>
-                <div class="ml-4 flex-shrink-0">
-                    <button type="button" class="inline-flex text-gray-400 hover:text-gray-600 focus:outline-none" onclick="this.parentElement.parentElement.parentElement.remove()">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-    
-    <script>
-        // Auto-hide messages after 5 seconds
-        document.addEventListener('DOMContentLoaded', function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    alert.style.opacity = '0';
-                    alert.style.transform = 'translateX(100%)';
-                    setTimeout(function() {
-                        alert.remove();
-                    }, 300);
-                }, 5000);
-            });
-        });
-    </script>
-    {% endif %}
 </body>
 </html>
